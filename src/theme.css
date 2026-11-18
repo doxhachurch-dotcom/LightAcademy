@@ -302,3 +302,7 @@ td{padding:8px 14px;font-size:12.5px}
 span.acc.lnk:hover{text-decoration:none;background:#e8eefc}
 .tl-card.click{cursor:pointer}.tl-card.click:hover{filter:brightness(.98)}
 @media (max-width:600px){.page-head h1{font-size:19px}.kpi .value{font-size:17px}}
+.rbar{display:inline-block;width:70px;height:5px;border-radius:3px;background:#eef1f5;vertical-align:middle;margin-right:10px;overflow:hidden}
+.rbar span{display:block;height:100%;background:#1f52e5;border-radius:3px}.rbar span.w{background:#e11d48}
+tfoot td{font-weight:600;background:#fafbfc}
+@media (max-width:600px){.rbar{display:none}}

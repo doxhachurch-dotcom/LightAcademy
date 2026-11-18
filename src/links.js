@@ -10,6 +10,7 @@ const KPI_GO=[
  [/^Impayés|^Reste à payer|^Prochaine échéance/,()=>ui.role==='parent'?"go('paiements')":"go('recouvrement')"],
  [/^Trésorerie/,()=>"go('tresorerie')"],
  [/^Présence|^Absences|^Appels à faire/,()=>"go('presences')"],
+ [/^Recouvrement$/,()=>"go('recouvrement')"],
  [/^Moyenne générale/,()=>ui.role==='parent'?"go('notes')":"go('bulletins')"],
  [/^Demandes d’inscription/,()=>"go('inscriptions')"],
  [/^Cours /,()=>"go('edt')"],
@@ -18,7 +19,7 @@ const KPI_GO=[
  [/^Masse salariale/,()=>"ui.payMonth=curMonth();go('paie')"],
  [/^Congés/,()=>"go('conges')"],
  [/^Déclarations/,()=>"go('declarations')"]];
-function kpiGo(label){if(ui.page!=='dashboard')return '';const m=KPI_GO.find(([r])=>r.test(label));if(!m)return '';const js=m[1]();const p=(js.match(/go\('([a-z]+)'/)||[])[1];return p&&canSee(p)?js:''}
+function kpiGo(label){if(ui.page!=='dashboard'&&ui.page!=='rapports')return '';const m=KPI_GO.find(([r])=>r.test(label));if(!m)return '';const js=m[1]();const p=(js.match(/go\('([a-z]+)'/)||[])[1];return p&&canSee(p)?js:''}
 function kpi(label,value,sub='',icon='',tone='t-indigo',title=''){const g=kpiGo(label);return `<div class="card kpi${g?' click':''}"${g?` onclick="${g}" title="Ouvrir"`:''}><div class="label">${label}${g?`<span class="kpi-go">${ic('chevronRight',13)}</span>`:''}</div><div class="value" ${title?`title="${esc(title)}"`:''}>${value}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`}
 
 /* Noms d'élèves, de salariés et numéros de compte cliquables partout */
