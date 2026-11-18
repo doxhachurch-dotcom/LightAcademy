@@ -13,7 +13,7 @@ function sbClient(){if(SB)return Promise.resolve(SB);return new Promise((res,rej
  if(window.supabase&&window.supabase.createClient)return go_();const s=document.createElement('script');s.src=CLOUD.lib;s.onload=go_;s.onerror=()=>rej(new Error('Serveur injoignable. Vérifiez la connexion internet.'));document.head.appendChild(s)})}
 function fnv(str){let h=0x811c9dc5;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)}return (h>>>0).toString(36)+':'+str.length}
 const cacheKey=sid=>'light-academy-data-'+sid;
-const authErr=e=>{const m=String(e&&e.message||e||'');if(/Invalid login/i.test(m))return 'Adresse e-mail ou mot de passe incorrect.';if(/not confirmed/i.test(m))return 'Adresse e-mail pas encore confirmée : ouvrez le lien reçu par e-mail.';if(/already registered/i.test(m))return 'Un compte existe déjà avec cette adresse. Utilisez « Se connecter » ou « Mot de passe oublié ».';if(/Password should/i.test(m))return 'Le mot de passe doit contenir au moins 6 caractères.';if(/fetch|network|injoignable/i.test(m))return 'Serveur injoignable. Vérifiez la connexion internet.';return m||'Une erreur est survenue.'};
+const authErr=e=>{const m=String(e&&e.message||e||'');if(/Invalid login/i.test(m))return 'Adresse e-mail ou mot de passe incorrect.';if(/not confirmed/i.test(m))return 'Adresse e-mail pas encore confirmée : ouvrez le lien reçu par e-mail.';if(/already registered/i.test(m))return 'Un compte existe déjà avec cette adresse. Utilisez « Se connecter » ou « Mot de passe oublié ».';if(/Password should/i.test(m))return 'Le mot de passe doit contenir au moins 6 caractères.';if(/fetch|network|injoignable/i.test(m)||!navigator.onLine)return 'Pas de connexion internet. La première connexion sur un appareil doit se faire en ligne ; ensuite, Light Academy fonctionne aussi hors ligne.';return m||'Une erreur est survenue.'};
 function lgMsg(t,ok){const el=document.getElementById('lg-err');if(!el)return toast(t);el.textContent=t;el.className='note '+(ok?'ok':'warn')+' mb';el.style.display='flex'}
 function lgBusy(b,txt){const x=document.querySelector('.login-btn');if(x){x.disabled=b;x.textContent=b?(txt||'Connexion…'):'Se connecter'}}
 
@@ -49,7 +49,7 @@ async function cloudEnter(){const sb=await sbClient();const {data:{session}}=awa
  await refreshMembers();await readRev();writeMeta();enterAs(m);startWatch()}
 function applyRows(rows,full){if(full){const keep=S;S={};}for(const r of rows){if(r.key==='_import')continue;S[r.key]=r.data;CL.hashes[r.key]=fnv(JSON.stringify(r.data));if(!CL.last||r.updated_at>CL.last)CL.last=r.updated_at}S.users=[];CACHE={};try{localStorage.setItem(cacheKey(CL.sid),JSON.stringify(S))}catch(e){}}
 function enterAs(m){const u={id:'cloud:'+m.email,name:m.name||m.email,email:m.email,role:m.role,active:true,employeeId:m.employee_id||null,studentIds:m.student_ids||[]};if(u.role==='prof'&&!(u.employeeId&&emp(u.employeeId)))u.employeeId=S.persona&&S.persona.teacher;setAccess(u);closeModal();render();window.scrollTo(0,0);toast('Connecté à '+(CL.school||'votre établissement'))}
-function writeMeta(){try{localStorage.setItem(CLOUD_META,JSON.stringify({sid:CL.sid,school:CL.school,email:CL.email,member:CL.member,hashes:CL.hashes,last:CL.last}))}catch(e){}}
+function writeMeta(){try{localStorage.setItem(cacheKey(CL.sid),JSON.stringify(S))}catch(e){}try{localStorage.setItem(CLOUD_META,JSON.stringify({sid:CL.sid,school:CL.school,email:CL.email,member:CL.member,hashes:CL.hashes,last:CL.last}))}catch(e){}}
 async function refreshMembers(){const {data}=await SB.from('members').select('*').eq('school_id',CL.sid).order('created_at');CL.members=data||[]}
 async function readRev(){const {data}=await SB.from('schools').select('rev,name').eq('id',CL.sid).single();if(data){CL.rev=data.rev;CL.school=data.name}}
 
@@ -67,15 +67,19 @@ function blankState(){const k=['clients','invoices','quotes','purchases','txs','
 
 /* ---------- enregistrement en ligne ---------- */
 const _saveLocal=save;
-save=function(){if(!CL)return _saveLocal();CACHE={};try{localStorage.setItem(cacheKey(CL.sid),JSON.stringify(S))}catch(e){}CL.pending=true;setSync('pending');clearTimeout(CL.timer);CL.timer=setTimeout(pushNow,1500)};
+save=function(){if(!CL)return _saveLocal();CACHE={};try{localStorage.setItem(cacheKey(CL.sid),JSON.stringify(S))}catch(e){}CL.pending=true;setSync(navigator.onLine?'pending':'offline');clearTimeout(CL.timer);if(navigator.onLine)CL.timer=setTimeout(()=>SB?pushNow():cloudResume(),1500)};
 async function pushNow(first){if(!CL||!SB)return;clearTimeout(CL.timer);const rows=[],h={};for(const k of Object.keys(S)){if(k==='users'||k==='_import')continue;const j=JSON.stringify(S[k]);if(j===undefined)continue;const x=fnv(j);if(CL.hashes[k]!==x){rows.push({school_id:CL.sid,key:k,data:S[k],updated_by:CL.email});h[k]=x}}
- if(!rows.length){CL.pending=false;setSync('ok');return}setSync('saving');
- try{for(let i=0;i<rows.length;i+=6){const {error}=await SB.from('school_state').upsert(rows.slice(i,i+6),{onConflict:'school_id,key'});if(error)throw error}Object.assign(CL.hashes,h);CL.pending=false;await readRev();const {data}=await SB.from('school_state').select('updated_at').eq('school_id',CL.sid).order('updated_at',{ascending:false}).limit(1);if(data&&data[0])CL.last=data[0].updated_at;writeMeta();setSync('ok')}
+ if(!rows.length){CL.pending=false;setSync('ok');return}if(!navigator.onLine){CL.pending=true;setSync('offline');return}setSync('saving');
+ try{if(CL.last&&!first){const {data:rem}=await SB.from('school_state').select('key,data,updated_at').eq('school_id',CL.sid).in('key',rows.map(r=>r.key)).gt('updated_at',CL.last);for(const x of rem||[]){const row=rows.find(r=>r.key===x.key);if(!row)continue;const m=mergeData(x.data,S[x.key]);S[x.key]=m;row.data=m;h[x.key]=fnv(JSON.stringify(m))}if(rem&&rem.length){CACHE={};CL.merged=true}}
+ for(let i=0;i<rows.length;i+=6){const {error}=await SB.from('school_state').upsert(rows.slice(i,i+6),{onConflict:'school_id,key'});if(error)throw error}Object.assign(CL.hashes,h);CL.pending=false;if(CL.merged){CL.merged=false;try{localStorage.setItem(cacheKey(CL.sid),JSON.stringify(S))}catch(e){}if(!document.querySelector('#modal-root .modal'))render();toast('Vos modifications hors ligne ont été fusionnées avec celles de vos collègues')}await readRev();const {data}=await SB.from('school_state').select('updated_at').eq('school_id',CL.sid).order('updated_at',{ascending:false}).limit(1);if(data&&data[0])CL.last=data[0].updated_at;writeMeta();setSync('ok')}
  catch(e){console.error(e);CL.pending=true;setSync('offline');clearTimeout(CL.timer);CL.timer=setTimeout(pushNow,15000)}}
 async function pullRemote(){if(!CL||!SB||CL.pending)return;try{const {data}=await SB.from('schools').select('rev').eq('id',CL.sid).single();if(!data||data.rev===CL.rev)return setSync('ok');
  let q=SB.from('school_state').select('key,data,updated_at').eq('school_id',CL.sid);if(CL.last)q=q.gt('updated_at',CL.last);const {data:rows,error}=await q;if(error)throw error;CL.rev=data.rev;
  const changed=(rows||[]).filter(r=>CL.hashes[r.key]!==fnv(JSON.stringify(r.data)));applyRows(rows||[],false);writeMeta();if(changed.length&&!document.querySelector('#modal-root .modal')){render();toast('Données mises à jour par un collègue')}setSync('ok')}catch(e){setSync('offline')}}
-function startWatch(){if(CL.watch)return;CL.watch=setInterval(pullRemote,45000);window.addEventListener('focus',pullRemote);window.addEventListener('online',()=>{if(CL&&CL.pending)pushNow()});window.addEventListener('beforeunload',e=>{if(CL&&CL.pending){pushNow();e.preventDefault();e.returnValue=''}})}
+/* fusion : listes d'éléments avec identifiant → union (la version de cet appareil l'emporte), objets → fusion des clés */
+function mergeData(remote,local){if(Array.isArray(remote)&&Array.isArray(local)&&local.every(x=>x&&typeof x==='object'&&'id' in x)&&remote.every(x=>x&&typeof x==='object'&&'id' in x)){const out=remote.slice();const idx=new Map(out.map((x,i)=>[x.id,i]));for(const x of local){if(idx.has(x.id))out[idx.get(x.id)]=x;else out.push(x)}return out}
+ if(remote&&local&&typeof remote==='object'&&typeof local==='object'&&!Array.isArray(remote)&&!Array.isArray(local))return {...remote,...local};return local}
+function startWatch(){if(CL.watch)return;CL.watch=setInterval(pullRemote,45000);window.addEventListener('focus',pullRemote);window.addEventListener('online',()=>cloudResume());window.addEventListener('offline',()=>setSync('offline'));window.addEventListener('beforeunload',e=>{if(CL&&CL.pending){pushNow();e.preventDefault();e.returnValue=''}})}
 function setSync(s){if(!CL)return;CL.status=s;const el=document.getElementById('sync-st');if(el)el.outerHTML=syncChip()}
 function syncChip(){if(!CL)return '';const m={ok:['Enregistré en ligne','ok'],pending:['Modifications en attente','wait'],saving:['Enregistrement…','wait'],offline:['Hors ligne : enregistré sur cet appareil','off']}[CL.status]||['','ok'];return `<span id="sync-st" class="sync ${m[1]} hide-sm" title="${esc(CL.school||'')}"><i></i>${m[0]}</span>`}
 
@@ -84,7 +88,7 @@ const _topbarCloud=topbar;
 topbar=function(){const h=_topbarCloud();return CL?h.replace('<div class="topbar-right">','<div class="topbar-right">'+syncChip()):h};
 const _logoutLocal=logout;
 logout=function(){if(!CL)return _logoutLocal();cloudLogout()};
-async function cloudLogout(){if(CL&&CL.pending){try{await pushNow()}catch(e){}}try{localStorage.removeItem(CLOUD_META);if(CL)localStorage.removeItem(cacheKey(CL.sid));localStorage.removeItem(SESSION_KEY)}catch(e){}try{const sb=await sbClient();await sb.auth.signOut()}catch(e){}CL=null;location.hash='';location.reload()}
+async function cloudLogout(){if(CL&&CL.pending){try{await pushNow()}catch(e){}if(CL.pending&&!confirm('Des modifications n’ont pas encore été envoyées (pas de connexion). Si vous vous déconnectez maintenant, elles seront perdues. Continuer ?'))return}try{localStorage.removeItem(CLOUD_META);if(CL)localStorage.removeItem(cacheKey(CL.sid));localStorage.removeItem(SESSION_KEY)}catch(e){}try{const sb=await sbClient();await sb.auth.signOut()}catch(e){}CL=null;location.hash='';location.reload()}
 
 /* utilisateurs : en ligne, les comptes sont ceux de Supabase */
 const _usersLocal=VIEWS.utilisateurs;
@@ -101,13 +105,19 @@ async function delMember(email){if(!confirm('Retirer l’accès de '+email+' ?')
 
 /* ---------- démarrage ---------- */
 const _bootLocal=boot;
-boot=function(){let meta=null;try{meta=JSON.parse(localStorage.getItem(CLOUD_META)||'null')}catch(e){}const authInUrl=/access_token=|type=recovery|type=signup/.test(location.hash);
+function regSW(){try{if(/^https?:$/.test(location.protocol)&&!document.querySelector('link[rel=manifest]'))for(const [r,h] of [['manifest','manifest.webmanifest'],['icon','icon-192.png'],['apple-touch-icon','icon-192.png']]){const l=document.createElement('link');l.rel=r;l.href=h;document.head.appendChild(l)}}catch(e){}try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('./sw.js').catch(()=>{})}catch(e){}}
+function isDirty(){return Object.keys(S).some(k=>k!=='users'&&k!=='_import'&&CL.hashes[k]!==fnv(JSON.stringify(S[k])))}
+let _resuming=false;
+async function cloudResume(){if(_resuming||!CL)return;if(!navigator.onLine)return setSync('offline');_resuming=true;
+ try{const sb=await sbClient();const {data,error}=await sb.auth.getSession();
+  if(!data||!data.session){if(error||!navigator.onLine){setSync('offline');return}return cloudLogout()}
+  if(CL.email!==data.session.user.email.toLowerCase()){CL=null;return cloudEnter()}
+  await refreshMembers();if(CL.pending||isDirty()){CL.pending=true;await pushNow()}await pullRemote();startWatch();if(!CL.pending)setSync('ok')}
+ catch(e){setSync('offline')}finally{_resuming=false}}
+boot=function(){regSW();let meta=null;try{meta=JSON.parse(localStorage.getItem(CLOUD_META)||'null')}catch(e){}const authInUrl=/access_token=|type=recovery|type=signup/.test(location.hash);
  if(!meta&&!authInUrl)return _bootLocal();
  if(meta){let cache=null;try{cache=JSON.parse(localStorage.getItem(cacheKey(meta.sid))||'null')}catch(e){}
-  if(cache){S=cache;S.users=[];CL={sid:meta.sid,school:meta.school,email:meta.email,member:meta.member,hashes:meta.hashes||{},last:meta.last,rev:null,pending:false,status:'pending',members:[]};const h=location.hash.slice(1);enterAs(meta.member);if(VIEWS[h]){ui.page=h;render()}}
-  else _bootLocal()}
- else _bootLocal();
- sbClient().then(async sb=>{const {data:{session}}=await sb.auth.getSession();
-  if(!session){if(meta)cloudLogout();return}
-  if(!CL||CL.email!==session.user.email.toLowerCase()){CL=null;return cloudEnter()}
-  await refreshMembers();await pullRemote();startWatch();if(CL.pending===false)setSync('ok')}).catch(()=>{if(CL)setSync('offline')})};
+  if(cache){S=cache;S.users=[];CL={sid:meta.sid,school:meta.school,email:meta.email,member:meta.member,hashes:meta.hashes||{},last:meta.last,rev:null,pending:false,status:'pending',members:[]};CL.pending=isDirty();const h=location.hash.slice(1);enterAs(meta.member);if(VIEWS[h]){ui.page=h;render()}setSync(navigator.onLine?(CL.pending?'pending':'saving'):'offline');
+   window.addEventListener('online',()=>cloudResume());window.addEventListener('offline',()=>setSync('offline'));return cloudResume()}
+  else{_bootLocal();if(navigator.onLine)sbClient().then(async sb=>{const {data}=await sb.auth.getSession();if(data&&data.session)cloudEnter()}).catch(()=>{});return}}
+ _bootLocal();sbClient().then(async sb=>{const {data}=await sb.auth.getSession();if(data&&data.session)cloudEnter()}).catch(()=>{})};

@@ -62,3 +62,11 @@ L'ordre des fichiers compte : chaque fichier peut redéfinir des fonctions des p
 - Toute autre adresse se connecte à Supabase : « Première connexion ? Créer mon mot de passe », puis création de l'établissement ou accès à l'école qui a ajouté cette adresse.
 - Les données sont aussi gardées sur l'appareil : sans connexion internet, on continue à travailler et l'envoi reprend au retour du réseau.
 - Clé utilisée dans `src/cloud.js` : clé publique (publishable), sans risque côté navigateur.
+
+## Mode hors ligne (hybride)
+
+- `sw.js` garde l'application et ses bibliothèques sur l'appareil : Light Academy s'ouvre même sans internet (après une première ouverture en ligne).
+- Les modifications faites hors ligne restent sur l'appareil, même si on ferme la page, et sont envoyées au retour du réseau.
+- Si un collègue a modifié les mêmes données entre-temps, les deux versions sont fusionnées (les élèves, paiements, etc. des deux côtés sont gardés).
+- `manifest.webmanifest` et les icônes permettent d'installer Light Academy comme une application sur téléphone ou ordinateur.
+- Ces fichiers sont dans `public/` et copiés à la racine par `npm run assemble` : ils doivent être publiés à côté de `index.html`.
