@@ -7,7 +7,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const src = (f) => readFileSync(join(root, 'src', f), 'utf8');
 
 const css = src('style.css') + src('theme.css');
-const js = ['core.js', 'data.js', 'logic.js', 'views1.js', 'views2.js', 'views3.js', 'school.js', 'edu.js', 'access.js']
+const js = ['core.js', 'data.js', 'logic.js', 'views1.js', 'views2.js', 'views3.js', 'school.js', 'edu.js', 'access.js', 'io.js']
   .map(src).join('\n') + '\nboot();\n';
 
 const html = `<!DOCTYPE html>
