@@ -1,0 +1,19 @@
+{
+  "name": "light-academy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Light Academy – logiciel de gestion scolaire et financière pour écoles privées (scolarité, comptabilité SYSCOHADA, paie)",
+  "type": "module",
+  "scripts": {
+    "assemble": "node scripts/assemble.mjs",
+    "dev": "node scripts/assemble.mjs && vite",
+    "build": "node scripts/assemble.mjs && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

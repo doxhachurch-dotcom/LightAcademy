@@ -26,7 +26,19 @@ Ouvrez **`index.html`** dans un navigateur (Chrome, Edge, Firefox, Safari). Aucu
 | `school.js` | Pays RDC, jeu de démonstration, élèves, frais de scolarité, reçus, recouvrement |
 | `edu.js` | Gestion scolaire : classes, matières, emploi du temps, présences, notes, bulletins, inscriptions, communication, documents, rapports, espaces enseignant et parent |
 
-## Reconstruire `index.html` après une modification
+## Lancer le projet avec Node.js (recommandé)
+
+```bash
+npm install        # installe Vite
+npm run dev        # serveur de développement sur http://localhost:5173
+npm run build      # version de production dans dist/
+npm run preview    # prévisualise la version de production
+```
+
+`npm run dev` et `npm run build` reconstruisent d'abord `index.html` à partir de `src/` (script `scripts/assemble.mjs`).
+Pour héberger le logiciel (Hostinger, Netlify, Vercel, GitHub Pages…), déployez le dossier `dist/` ou simplement `index.html`.
+
+### Sans Node.js
 
 ```bash
 cd src
