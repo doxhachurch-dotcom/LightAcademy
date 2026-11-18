@@ -504,6 +504,53 @@ td{padding:10px 16px;font-size:13.5px}
 .ccard-body{padding:14px 16px 16px}.ccard-body h4{font-size:15px}
 @media (max-width:1180px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){.page-head h1{font-size:22px}.kpi .value{font-size:19px}.content{padding:16px 14px 40px}}
+/* =====================================================================
+   TYPOGRAPHIE PLUS PETITE, ALLURE PLUS SOBRE, ÉLÉMENTS CLIQUABLES
+   ===================================================================== */
+body{font-size:13px}
+.content{padding:22px 32px 44px}
+.page-head{margin-bottom:16px;align-items:flex-end}
+.page-head h1{font-size:21px;font-weight:600;letter-spacing:-.015em}
+.page-head p,.eyebrow{font-size:12.5px}
+.kpi{padding:14px 16px}
+.kpi .label{font-size:12px;justify-content:space-between}
+.kpi .value{font-size:20px;font-weight:600}
+.kpi .sub{font-size:11.5px}
+.kpi.click{cursor:pointer}.kpi.click:hover{background:#f8fafc}
+.kpi-go{color:#b4bccb;display:inline-flex}.kpi.click:hover .kpi-go{color:var(--primary)}
+.acct-card .bal{font-size:18px}
+.card,.grid.kpis{border-radius:8px;box-shadow:none}
+.card-head{padding:11px 16px;min-height:46px}
+.card-head h3{font-size:13px;font-weight:600}
+.card-body{padding:16px}
+.list-item{padding:9px 16px;gap:10px}
+.btn{height:32px;font-size:12.5px;padding:0 12px;border-radius:6px;box-shadow:none}
+.btn-sm{height:28px;font-size:12px}.btn-xs{height:24px;font-size:11.5px}
+.input{height:32px;font-size:13px;border-radius:6px}.input.sm{height:28px;font-size:12.5px}
+.tabs{gap:20px;margin-bottom:16px}.tab{font-size:13px}
+th{font-size:10.5px;padding:8px 14px}
+td{padding:8px 14px;font-size:12.5px}
+.person .s,.xs{font-size:11.5px}.sm{font-size:12.5px}
+.badge{font-size:11px;border-radius:4px;padding:1px 6px}
+.ic-box{width:28px;height:28px;border-radius:6px;background:#f2f4f7!important;color:#475467!important}
+.date-chip{width:40px;height:44px;border-radius:6px;background:#f2f4f7}
+.org-ini{border-radius:6px}
+.logo-sq{background:#1f52e5;border-radius:7px;width:32px;height:32px;font-size:16px}
+.sidebar{--sb:248px}
+.brand{height:58px}.brand-name{font-size:15px;font-weight:600}
+.nav a{font-size:13px;padding:6px 10px;gap:10px;border-radius:6px}
+.nav a svg{width:16px;height:16px}
+.nav-section{font-size:10px;padding:14px 10px 4px}
+.topbar{height:56px}
+.top-search .input{height:34px;font-size:13px;border-radius:6px}
+.top-ic,.me{width:34px;height:34px;border-radius:6px;font-size:12.5px}
+.modal-head h3{font-size:15px}
+.field label{font-size:12.5px}
+.ccard-body h4{font-size:14px}
+.lnk{cursor:pointer}.lnk:hover{color:var(--primary);text-decoration:underline;text-underline-offset:2px}
+span.acc.lnk:hover{text-decoration:none;background:#e8eefc}
+.tl-card.click{cursor:pointer}.tl-card.click:hover{filter:brightness(.98)}
+@media (max-width:600px){.page-head h1{font-size:19px}.kpi .value{font-size:17px}}
 </style>
 </head>
 <body>
@@ -1275,10 +1322,10 @@ VIEWS.dashboard=function(){const st=students();const inv=syInv();const fact=sum(
  const run=S.runs[curMonth()];const rr=runResults(curMonth());
  const recent=S.txs.filter(t=>t.match&&t.match.t==='inv').slice(-5).reverse();
  const d=new Date();const greet=d.getHours()<18?'Bonjour':'Bonsoir';
- return head(`${greet}, ${esc(S.company.director.replace(/^(Mme|M\.)\s+/,'').split(' ')[0])}`,`${ucf(d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))} · ${late.length} familles à relancer`,`<button class="btn" onclick="openEncaisser()">${ic('wallet',16)} Encaisser</button><button class="btn btn-primary" onclick="openStudentForm()">${ic('plus',16)} Inscrire un élève</button>`)+
+ return head('Tableau de bord',`${ucf(d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))} · ${late.length} familles à relancer`,`<button class="btn" onclick="openEncaisser()">${ic('wallet',16)} Encaisser</button><button class="btn btn-primary" onclick="openStudentForm()">${ic('plus',16)} Inscrire un élève</button>`)+
  `<div class="grid kpis">${kpi('Élèves inscrits',String(st.length),`${st.filter(s=>s.nouveau).length} nouveaux cette année`,'users','t-sky')}${kpi('Encaissé '+S.schoolYear,mshort(paid),`${pct(attendu?paid/attendu:0,0)} de l’année (${mshort(attendu)})`,'checkCircle','t-emerald',money(paid))}${kpi('Impayés échus',`<span class="${lateAmt?'neg':''}">${mshort(lateAmt)}</span>`,`${late.length} famille${late.length>1?'s':''} à relancer`,'alert','t-rose',money(lateAmt))}${kpi('Trésorerie',mshort(cash),'Banque, caisse et '+country().mm[0],'wallet','t-amber',money(cash))}</div>
  <div class="grid cols-2 mt"><div class="card"><div class="card-head"><div><h3>Encaissements et dépenses</h3><div class="xs muted">Exercice ${YEAR}, par mois</div></div><button class="btn btn-sm" onclick="go('tresorerie')">Trésorerie ${ic('chevronRight',14)}</button></div><div class="card-body">${legend([['Frais encaissés','#1f52e5'],['Dépenses','#f59e0b']])}${lineChart({labels:months.map(m=>MO[+m.slice(5)-1]),series:[{name:'Frais encaissés',color:'#1f52e5',values:encM},{name:'Dépenses',color:'#f59e0b',values:depM,dash:true}],fmt:money})}</div></div>
- <div class="card"><div class="card-head"><h3>Recouvrement ${S.schoolYear}</h3><span class="fw6">${pct(fact?paid/fact:0,0)}</span></div><div class="card-body">${hbars(Object.entries(cyc).map(([k,c])=>({label:k+' · '+c.n+' élèves',value:c.due?c.paid/c.due:0,text:pct(c.due?c.paid/c.due:0,0),color:CYC_C[k],sub:money(c.paid)+' sur '+money(c.due)})),{max:1})}<div class="hr"></div><div class="xs muted mb" style="margin-bottom:8px">Encaissements par mode de paiement</div>${S.treasury.map(t=>`<div class="flex-between sm" style="padding:4px 0"><span class="flex">${ic(t.type==='bank'?'bank':t.type==='cash'?'cash':'phone',14)} ${MODE_LBL(t.id)}</span><span class="fw5">${money(modes[t.id]||0)}</span></div>`).join('')}</div></div></div>
+ <div class="card"><div class="card-head"><h3>Recouvrement ${S.schoolYear}</h3><button class="link sm" onclick="go('recouvrement')">${pct(fact?paid/fact:0,0)} encaissé</button></div><div class="card-body">${hbars(Object.entries(cyc).map(([k,c])=>({label:k+' · '+c.n+' élèves',value:c.due?c.paid/c.due:0,text:pct(c.due?c.paid/c.due:0,0),color:CYC_C[k],sub:money(c.paid)+' sur '+money(c.due)})),{max:1})}<div class="hr"></div><div class="xs muted mb" style="margin-bottom:8px">Encaissements par mode de paiement</div>${S.treasury.map(t=>`<div class="flex-between sm" style="padding:4px 0"><span class="flex">${ic(t.type==='bank'?'bank':t.type==='cash'?'cash':'phone',14)} ${MODE_LBL(t.id)}</span><span class="fw5">${money(modes[t.id]||0)}</span></div>`).join('')}</div></div></div>
  <div class="grid cols-3 mt">
  <div class="card"><div class="card-head"><h3>Classes à relancer</h3><button class="link sm" onclick="go('recouvrement')">Tout voir</button></div>${topCl.map(([c,v])=>`<div class="list-item click" onclick="ui.f.recouvrement={c:'${esc(c)}'};go('recouvrement')"><span class="ic-box t-rose">${ic('users',15)}</span><div class="grow"><div class="fw5">${esc(c)}</div><div class="xs muted">${late.filter(s=>s.classe===c).length} élève(s) en retard</div></div><div class="num fw5 neg">${money(v)}</div></div>`).join('')||'<div class="empty">Aucun impayé échu</div>'}</div>
  <div class="card"><div class="card-head"><h3>Derniers paiements</h3><button class="link sm" onclick="go('scolarite',{},'enc')">Tout voir</button></div>${recent.map(t=>{const i=invById(t.match.id);const s=client(i.clientId);return `<div class="list-item click" onclick="openReceipt('${t.id}')">${avatar(s.name,32)}<div class="grow min0"><div class="fw5 ellipsis">${esc(s.name)}</div><div class="xs muted">${esc(s.classe)} · ${MODE_LBL(t.tid)} · ${fds(t.date)}</div></div><div class="num fw5 pos">+${money(t.amount)}</div></div>`}).join('')}</div>
@@ -1358,7 +1405,7 @@ function tarifsView(){return `<div class="card mb"><div class="card-head"><h3>Gr
  <div class="card"><div class="card-head"><h3>Échéancier</h3></div><div class="card-body"><dl class="dl"><div><dt>1re tranche · rentrée (septembre)</dt><dd>${S.tranches[0]} %</dd></div><div><dt>2e tranche · janvier</dt><dd>${S.tranches[1]} %</dd></div><div><dt>3e tranche · avril</dt><dd>${S.tranches[2]} %</dd></div></dl><div class="hint">Les frais d’inscription et la tenue sont facturés avec la 1re tranche.</div></div></div></div>`}
 
 /* ================= HABILLAGE DOXHA ================= */
-const SPARK='<svg class="spark" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>';
+const SPARK='';const _SPARK_OLD='<svg class="spark" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>';
 function orgIni(){return S.company.name.split(/\s+/).filter(w=>w.length>2&&!/^(les|des|du|de)$/i.test(w)).map(w=>w[0]).slice(0,2).join('').toUpperCase()}
 function sidebar(){const me=S.employees[2]||{prenom:'Admin',poste:'admin'};return `<aside class="sidebar ${ui.sidebarOpen?'open':''}"><div class="brand"><div class="logo-sq">L${SPARK}</div><div class="brand-name">Light Academy</div></div>
  <div class="org-card" onclick="go('parametres')"><div class="org-ini">${orgIni()}</div><div class="min0 grow"><div class="fw6 ellipsis">${esc(S.company.name)}</div><div class="sm muted">${students().length} élèves · ${S.currency}</div></div>${ic('chevronRight',16)}</div>
@@ -1478,22 +1525,22 @@ VIEWS.dashboard=function(){if(ui.role==='teacher')return dashTeacher();if(ui.rol
  <div class="grid cols-2e mt"><div class="card"><div class="card-head"><h3>Prochains événements</h3><button class="link sm" onclick="go('edt',{},'cal')">Calendrier</button></div>${up.map(evItem).join('')||'<div class="empty">Aucun événement</div>'}</div><div class="card"><div class="card-head"><h3>Dernières annonces</h3><button class="link sm" onclick="go('communication',{},'annonces')">Tout voir</button></div>${S.announcements.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,3).map(a=>`<div class="list-item click" onclick="go('communication',{},'annonces')"><span class="ic-box t-sky">${ic('megaphone',15)}</span><div class="grow min0"><div class="fw5 ellipsis">${esc(a.title)}</div><div class="xs muted ellipsis">${esc(a.body)}</div></div><span class="xs muted">${fds(a.date)}</span></div>`).join('')}</div></div>`;
  const i=html.indexOf('<div class="grid cols-2 mt">');return i>0?html.slice(0,i)+extra+html.slice(i):html+extra};
 const EVT={vacances:['Congés','#10b981'],conseil:['Conseil de classe','#6366f1'],reunion:['Réunion','#f59e0b'],finance:['Finances','#1f52e5'],vie:['Vie de l’école','#14b8a6'],examen:['Évaluations','#ef4444'],sortie:['Sortie','#ec4899']};
-function evItem(e){const d=pd(e.date);return `<div class="list-item"><div class="date-chip"><b>${d.getDate()}</b><span>${MO[d.getMonth()]}</span></div><div class="grow min0"><div class="fw5 ellipsis">${esc(e.title)}</div><div class="xs muted">${ucf(d.toLocaleDateString('fr-FR',{weekday:'long'}))} · ${EVT[e.type][0]}</div></div><span class="ev-dot" style="background:${EVT[e.type][1]}"></span></div>`}
+function evItem(e){const d=pd(e.date);return `<div class="list-item click" onclick="go('edt',{},'cal')"><div class="date-chip"><b>${d.getDate()}</b><span>${MO[d.getMonth()]}</span></div><div class="grow min0"><div class="fw5 ellipsis">${esc(e.title)}</div><div class="xs muted">${ucf(d.toLocaleDateString('fr-FR',{weekday:'long'}))} · ${EVT[e.type][0]}</div></div><span class="ev-dot" style="background:${EVT[e.type][1]}"></span></div>`}
 function teacherLessons(day){const t=TEACHER_ID();const w=pd(day).getDay();return S.classes.flatMap(c=>(S.timetable[c.id]||[]).filter(l=>l.t===t&&l.d===w).map(l=>({...l,cid:c.id}))).sort((a,b)=>a.s-b.s)}
 function dashTeacher(){const e=emp(TEACHER_ID());const mc=myClasses();const ms=mc.flatMap(c=>stuOfClass(c.id));const day=nextSchoolDay(TODAY),isT=day===TODAY;const L=teacherLessons(day);const todo=isT?[...new Set(L.map(l=>l.cid))].filter(c=>!S.appelDone[TODAY+'|'+c]):[];const un=threadsFor().filter(isUnread).length;const myE=S.evaluations.filter(v=>(S.assign[v.classId]||{})[v.subjectId]===e.id);
- return head(`Bonjour, ${esc(e.prenom)}`,`${ucf(new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))} · ${L.length} cours ${isT?'aujourd’hui':'le '+pd(day).toLocaleDateString('fr-FR',{weekday:'long'})}`,`<button class="btn" onclick="go('notes')">${ic('edit',16)} Saisir des notes</button><button class="btn btn-primary" onclick="go('presences')">${ic('checkCircle',16)} Faire l’appel</button>`)+
+ return head('Accueil',`${ucf(new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))} · ${L.length} cours ${isT?'aujourd’hui':'le '+pd(day).toLocaleDateString('fr-FR',{weekday:'long'})}`,`<button class="btn" onclick="go('notes')">${ic('edit',16)} Saisir des notes</button><button class="btn btn-primary" onclick="go('presences')">${ic('checkCircle',16)} Faire l’appel</button>`)+
  `<div class="grid kpis">${kpi('Mes élèves',String(ms.length),mc.length+' classes','users','t-sky')}${kpi('Cours '+(isT?'aujourd’hui':'à venir'),String(L.length),L.length?SLOTS[L[0].s]+' – '+SLOTE[L[L.length-1].s]:'Pas de cours','calendar','t-violet')}${kpi('Appels à faire',String(todo.length),isT?'Aujourd’hui':'Pas de cours aujourd’hui','checkCircle','t-amber')}${kpi('Messages non lus',String(un),'Parents d’élèves','send','t-rose')}</div>
- <div class="grid cols-2 mt"><div class="card"><div class="card-head"><h3>Mon programme ${isT?'du jour':'· '+pd(day).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</h3></div><div class="card-body">${L.map(l=>{const s=subj(l.sub),c=clsById(l.cid);const done=S.appelDone[TODAY+'|'+l.cid];return `<div class="tl"><div class="tl-time">${SLOTS[l.s]}<span>${SLOTE[l.s]}</span></div><div class="tl-card" style="--c:${s.color}"><div class="grow"><div class="fw6">${esc(s.name)} · ${esc(c.name)}</div><div class="xs muted">${esc(l.room)} · ${stuOfClass(l.cid).length} élèves</div></div>${isT?(done?badge('Appel fait','b-green'):`<button class="btn btn-xs btn-primary" onclick="startAppel('${l.cid}')">Faire l’appel</button>`):''}</div></div>`}).join('')||'<div class="empty">Aucun cours</div>'}</div></div>
+ <div class="grid cols-2 mt"><div class="card"><div class="card-head"><h3>Mon programme ${isT?'du jour':'· '+pd(day).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</h3></div><div class="card-body">${L.map(l=>{const s=subj(l.sub),c=clsById(l.cid);const done=S.appelDone[TODAY+'|'+l.cid];return `<div class="tl"><div class="tl-time">${SLOTS[l.s]}<span>${SLOTE[l.s]}</span></div><div class="tl-card click" style="--c:${s.color}" onclick="go('classes',{classId:'${l.cid}'})"><div class="grow"><div class="fw6">${esc(s.name)} · ${esc(c.name)}</div><div class="xs muted">${esc(l.room)} · ${stuOfClass(l.cid).length} élèves</div></div>${isT?(done?badge('Appel fait','b-green'):`<button class="btn btn-xs btn-primary" onclick="event.stopPropagation();startAppel('${l.cid}')">Faire l’appel</button>`):''}</div></div>`}).join('')||'<div class="empty">Aucun cours</div>'}</div></div>
  <div class="card"><div class="card-head"><h3>Mes classes</h3></div>${mc.map(c=>{const subs=subjOf(c.id).filter(s=>S.assign[c.id][s.id]===e.id);const a=avgOf(subs.map(s=>classSubjAvg(c.id,s.id)));const weak=stuOfClass(c.id).filter(st=>{const v=avgOf(subs.map(s=>subjAvg(st,s.id)));return v!=null&&v<10}).length;return `<div class="list-item click" onclick="go('classes',{classId:'${c.id}'})"><div class="org-ini" style="width:38px;height:38px">${esc(c.name.replace(/\D/g,'')||c.name[0])}</div><div class="grow min0"><div class="fw5">${esc(c.name)}</div><div class="xs muted ellipsis">${subs.map(s=>s.short).join(' · ')} · ${weak} élève(s) sous 10</div></div>${avgCell(a)}</div>`}).join('')}</div></div>
- <div class="grid cols-2e mt"><div class="card"><div class="card-head"><h3>Messages des parents</h3><button class="link sm" onclick="go('communication')">Ouvrir</button></div>${threadsFor().slice(0,4).map(threadRow).join('')||'<div class="empty">Aucun message</div>'}</div><div class="card"><div class="card-head"><h3>Annonces</h3></div>${annFor().slice(0,3).map(a=>`<div class="list-item"><span class="ic-box t-sky">${ic('megaphone',15)}</span><div class="grow min0"><div class="fw5">${esc(a.title)}</div><div class="xs muted">${esc(a.body)}</div></div></div>`).join('')}</div></div>
+ <div class="grid cols-2e mt"><div class="card"><div class="card-head"><h3>Messages des parents</h3><button class="link sm" onclick="go('communication')">Ouvrir</button></div>${threadsFor().slice(0,4).map(threadRow).join('')||'<div class="empty">Aucun message</div>'}</div><div class="card"><div class="card-head"><h3>Annonces</h3></div>${annFor().slice(0,3).map(a=>`<div class="list-item click" onclick="go('communication',{},'annonces')"><span class="ic-box t-sky">${ic('megaphone',15)}</span><div class="grow min0"><div class="fw5">${esc(a.title)}</div><div class="xs muted">${esc(a.body)}</div></div></div>`).join('')}</div></div>
  <div class="hint mt">${myE.length} évaluations saisies ce trimestre.</div>`}
 function dashParent(){const k=curKid();const b=stuBal(k);const g=genAvg(k),rk=rankOf(k);const at=attOf(k.id);const ab=at.filter(a=>a.status==='absent');const next=stuInv(k.id).filter(i=>invStatus(i)!=='paid').sort((a,b)=>a.due.localeCompare(b.due))[0];
  const notes=S.evaluations.filter(e=>e.classId===k.level&&e.grades[k.id]!=null).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);const day=nextSchoolDay(TODAY);const L=(S.timetable[k.level]||[]).filter(l=>l.d===pd(day).getDay()).sort((a,b)=>a.s-b.s);
- return head(`Bonjour, ${esc(k.parent.name)}`,'Suivez la scolarité de vos enfants','')+kidSwitch()+
+ return head('Accueil',esc(k.parent.name),'')+kidSwitch()+
  `<div class="grid kpis">${kpi('Moyenne générale',graded(k.level)?fa(g):'—',rk?'Rang '+rk[0]+' / '+rk[1]+' · classe '+fa(classGenAvg(k.level)):'Maternelle : pas de notes chiffrées','edit','t-violet')}${kpi('Absences',String(ab.length),ab.filter(a=>!a.justified).length+' non justifiée(s) · '+at.filter(a=>a.status==='retard').length+' retard(s)','checkCircle','t-amber')}${kpi('Reste à payer',`<span class="${b.late>0.5?'neg':''}">${money(b.rest)}</span>`,b.late>0.5?money(b.late)+' en retard':'Aucun retard','wallet','t-rose')}${kpi('Prochaine échéance',next?fds(next.due):'—',next?ucf(next.label||''):'Tout est réglé','calendar','t-sky')}</div>
- <div class="grid cols-2 mt"><div class="card"><div class="card-head"><h3>Dernières notes</h3><button class="link sm" onclick="go('notes')">Toutes les notes</button></div>${notes.map(e=>{const s=subj(e.subjectId),v=e.grades[k.id];const ca=avgOf(Object.values(e.grades));return `<div class="list-item"><span class="ev-dot" style="background:${s.color}"></span><div class="grow min0"><div class="fw5">${esc(s.name)} · ${esc(e.title)}</div><div class="xs muted">${fds(e.date)} · moyenne de la classe ${fa(ca)}</div></div><b class="${v<10?'neg':''}">${String(v).replace('.',',')}<span class="muted fw5">/${e.max}</span></b></div>`}).join('')||'<div class="empty">Pas encore de notes</div>'}</div>
- <div class="card"><div class="card-head"><h3>${day===TODAY?'Aujourd’hui':ucf(pd(day).toLocaleDateString('fr-FR',{weekday:'long'}))}</h3><span class="xs muted">${esc(k.classe)}</span></div><div class="card-body">${L.map(l=>`<div class="tl"><div class="tl-time">${SLOTS[l.s]}<span>${SLOTE[l.s]}</span></div><div class="tl-card" style="--c:${subj(l.sub).color}"><div><div class="fw5">${esc(subj(l.sub).name)}</div><div class="xs muted">${esc(tName(emp(l.t)))}</div></div></div></div>`).join('')||'<div class="empty">Pas de cours</div>'}</div></div></div>
- <div class="grid cols-2e mt"><div class="card"><div class="card-head"><h3>Annonces de l’école</h3></div>${annFor().slice(0,3).map(a=>`<div class="list-item"><span class="ic-box t-sky">${ic('megaphone',15)}</span><div class="grow min0"><div class="fw5">${esc(a.title)}</div><div class="xs muted">${esc(a.body)}</div></div></div>`).join('')}</div><div class="card"><div class="card-head"><h3>À venir</h3></div>${S.events.filter(e=>e.date>=TODAY).slice(0,4).map(evItem).join('')}</div></div>`}
+ <div class="grid cols-2 mt"><div class="card"><div class="card-head"><h3>Dernières notes</h3><button class="link sm" onclick="go('notes')">Toutes les notes</button></div>${notes.map(e=>{const s=subj(e.subjectId),v=e.grades[k.id];const ca=avgOf(Object.values(e.grades));return `<div class="list-item click" onclick="go('notes')"><span class="ev-dot" style="background:${s.color}"></span><div class="grow min0"><div class="fw5">${esc(s.name)} · ${esc(e.title)}</div><div class="xs muted">${fds(e.date)} · moyenne de la classe ${fa(ca)}</div></div><b class="${v<10?'neg':''}">${String(v).replace('.',',')}<span class="muted fw5">/${e.max}</span></b></div>`}).join('')||'<div class="empty">Pas encore de notes</div>'}</div>
+ <div class="card"><div class="card-head"><h3>${day===TODAY?'Aujourd’hui':ucf(pd(day).toLocaleDateString('fr-FR',{weekday:'long'}))}</h3><span class="xs muted">${esc(k.classe)}</span></div><div class="card-body">${L.map(l=>`<div class="tl"><div class="tl-time">${SLOTS[l.s]}<span>${SLOTE[l.s]}</span></div><div class="tl-card click" style="--c:${subj(l.sub).color}" onclick="go('edt')"><div><div class="fw5">${esc(subj(l.sub).name)}</div><div class="xs muted">${esc(tName(emp(l.t)))}</div></div></div></div>`).join('')||'<div class="empty">Pas de cours</div>'}</div></div></div>
+ <div class="grid cols-2e mt"><div class="card"><div class="card-head"><h3>Annonces de l’école</h3></div>${annFor().slice(0,3).map(a=>`<div class="list-item click" onclick="go('communication',{},'annonces')"><span class="ic-box t-sky">${ic('megaphone',15)}</span><div class="grow min0"><div class="fw5">${esc(a.title)}</div><div class="xs muted">${esc(a.body)}</div></div></div>`).join('')}</div><div class="card"><div class="card-head"><h3>À venir</h3></div>${S.events.filter(e=>e.date>=TODAY).slice(0,4).map(evItem).join('')}</div></div>`}
 
 /* ================= CLASSES & MATIÈRES ================= */
 VIEWS.classes=function(){if(ui.params.classId)return classDetail(ui.params.classId);const list=ui.role==='teacher'?myClasses():S.classes;
@@ -1712,12 +1759,12 @@ const _dashEdu=VIEWS.dashboard;
 VIEWS.dashboard=function(){if(ui.access==='compta')return _dashAdmin();if(ui.access==='rh')return dashRH();return _dashEdu()};
 function dashRH(){const E=S.employees;const cm=curMonth();const run=S.runs[cm];const rr=runResults(cm);const pend=S.leaves.filter(l=>l.status==='pending');const abs=S.leaves.filter(l=>l.status==='approved'&&l.from<=TODAY&&l.to>=TODAY);
  const ends=E.filter(e=>e.end&&e.end>=TODAY&&e.end<=addDays(TODAY,90));const due=[];for(const m of payMonths()){const r=S.runs[m];if(r.status!=='validated')continue;for(const g of declGroups(m))if(!(S.decl[m]||{})[g.key])due.push({...g,m})}
- return head(`Bonjour, ${esc(ui.user.name.split(' ')[0])}`,`${ucf(new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))} · ressources humaines`,`<button class="btn" onclick="go('conges')">${ic('calendar',16)} Congés</button><button class="btn btn-primary" onclick="ui.payMonth='${cm}';go('paie')">${ic('payslip',16)} Préparer la paie</button>`)+
+ return head('Tableau de bord',`${ucf(new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))} · ressources humaines`,`<button class="btn" onclick="go('conges')">${ic('calendar',16)} Congés</button><button class="btn btn-primary" onclick="ui.payMonth='${cm}';go('paie')">${ic('payslip',16)} Préparer la paie</button>`)+
  `<div class="grid kpis">${kpi('Effectif',String(E.length),`${E.filter(e=>e.contrat==='CDI').length} CDI · ${E.filter(e=>e.contrat==='CDD').length} CDD · ${E.filter(e=>e.hourly).length} vacataires`,'users','t-sky')}${kpi('Masse salariale brute',mshort(sum(rr.map(r=>r.gross))),'Paie de '+MOL[+cm.slice(5)-1],'payslip','t-violet',money(sum(rr.map(r=>r.gross))))}${kpi('Congés à valider',String(pend.length),abs.length+' absent(s) aujourd’hui','calendar','t-amber')}${kpi('Déclarations à payer',String(due.length),due.length?money(sum(due.map(d=>d.amount))):'Tout est à jour','shield','t-rose')}</div>
  <div class="grid cols-2 mt"><div class="card"><div class="card-head"><h3>Paie de ${MOL[+cm.slice(5)-1]}</h3>${run?badge(run.status==='validated'?'Validée':'En préparation',run.status==='validated'?'b-green':'b-amber'):''}</div><div class="card-body">${run?payStepsHTML(cm):''}<dl class="dl mt"><div><dt>Bulletins</dt><dd>${rr.length}</dd></div><div><dt>Net à verser</dt><dd>${money(sum(rr.map(r=>r.net)))}</dd></div><div><dt>Charges patronales</dt><dd>${money(sum(rr.map(r=>r.empSoc+r.empTax)))}</dd></div><div><dt>Coût total</dt><dd>${money(sum(rr.map(r=>r.cost)))}</dd></div></dl></div></div>
- <div class="card"><div class="card-head"><h3>Demandes de congés</h3><button class="link sm" onclick="go('conges')">Tout voir</button></div>${pend.map(l=>{const e=emp(l.empId);return `<div class="list-item">${avatar(empName(e),34)}<div class="grow min0"><div class="fw5 ellipsis">${esc(empName(e))}</div><div class="xs muted">${esc(l.type)} · ${fds(l.from)} → ${fds(l.to)} · ${l.days} j</div></div><button class="btn btn-xs btn-primary" onclick="setLeave('${l.id}','approved')">Valider</button></div>`}).join('')||'<div class="empty">Aucune demande en attente</div>'}</div></div>
- <div class="grid cols-2e mt"><div class="card"><div class="card-head"><h3>Fins de contrat (90 jours)</h3></div>${ends.map(e=>`<div class="list-item">${avatar(empName(e),32)}<div class="grow"><div class="fw5">${esc(empName(e))}</div><div class="xs muted">${esc(e.poste)} · ${e.contrat}</div></div>${badge('Fin le '+fds(e.end),'b-amber')}</div>`).join('')||'<div class="empty">Aucun contrat n’arrive à échéance</div>'}</div>
- <div class="card"><div class="card-head"><h3>Déclarations sociales</h3><button class="link sm" onclick="go('declarations')">Ouvrir</button></div>${due.slice(0,5).map(d=>`<div class="list-item"><span class="ic-box t-rose">${ic('shield',15)}</span><div class="grow"><div class="fw5">${esc(d.org)} · ${monthLabel(d.m)}</div><div class="xs muted">${d.what}</div></div><b>${money(d.amount)}</b></div>`).join('')||'<div class="empty">Toutes les déclarations sont payées</div>'}</div></div>`}
+ <div class="card"><div class="card-head"><h3>Demandes de congés</h3><button class="link sm" onclick="go('conges')">Tout voir</button></div>${pend.map(l=>{const e=emp(l.empId);return `<div class="list-item click" onclick="go('conges')">${avatar(empName(e),34)}<div class="grow min0"><div class="fw5 ellipsis">${esc(empName(e))}</div><div class="xs muted">${esc(l.type)} · ${fds(l.from)} → ${fds(l.to)} · ${l.days} j</div></div><button class="btn btn-xs btn-primary" onclick="event.stopPropagation();setLeave('${l.id}','approved')">Valider</button></div>`}).join('')||'<div class="empty">Aucune demande en attente</div>'}</div></div>
+ <div class="grid cols-2e mt"><div class="card"><div class="card-head"><h3>Fins de contrat (90 jours)</h3></div>${ends.map(e=>`<div class="list-item click" onclick="openEmp('${e.id}')">${avatar(empName(e),32)}<div class="grow"><div class="fw5">${esc(empName(e))}</div><div class="xs muted">${esc(e.poste)} · ${e.contrat}</div></div>${badge('Fin le '+fds(e.end),'b-amber')}</div>`).join('')||'<div class="empty">Aucun contrat n’arrive à échéance</div>'}</div>
+ <div class="card"><div class="card-head"><h3>Déclarations sociales</h3><button class="link sm" onclick="go('declarations')">Ouvrir</button></div>${due.slice(0,5).map(d=>`<div class="list-item click" onclick="go('declarations')"><span class="ic-box t-rose">${ic('shield',15)}</span><div class="grow"><div class="fw5">${esc(d.org)} · ${monthLabel(d.m)}</div><div class="xs muted">${d.what}</div></div><b>${money(d.amount)}</b></div>`).join('')||'<div class="empty">Toutes les déclarations sont payées</div>'}</div></div>`}
 
 /* ---------- utilisateurs & droits ---------- */
 const RIGHTS=[['Tableau de bord',['✓','✓','✓','✓','✓']],['Élèves & familles',['✓','Ses classes','—','✓','Ses enfants']],['Inscriptions et réinscriptions',['✓','—','—','—','—']],['Classes, matières, emploi du temps',['✓','Lecture','—','—','Lecture']],['Présences et appel',['✓','✓ ses classes','—','—','Lecture']],['Notes, évaluations et bulletins',['✓','✓ ses matières','—','—','Lecture']],['Communication et annonces',['✓','✓','—','—','✓']],['Documents administratifs',['✓','—','—','—','Ses enfants']],['Frais de scolarité, reçus, recouvrement',['✓','—','—','✓','Ses paiements']],['Dépenses, trésorerie, fournisseurs',['✓','—','—','✓','—']],['Comptabilité et états financiers',['✓','—','—','✓','—']],['Personnel et contrats',['✓','—','✓','—','—']],['Paie, bulletins de salaire, congés',['✓','—','✓','—','—']],['Déclarations sociales',['✓','—','✓','Paiement','—']],['Rapports et statistiques',['✓','—','—','—','—']],['Paramètres et utilisateurs',['✓','—','—','—','—']]];
@@ -1837,6 +1884,44 @@ function impGo(){const I=ui.imp;const R=impRows().filter(r=>!r.errs.length);let 
 
 /* ---------- boutons sur la page Élèves ---------- */
 const _vEleves=VIEWS.eleves;VIEWS.eleves=function(){return _vEleves().replace(`<button class="btn" onclick="exportStudents()">${ic('copy',16)} Exporter</button>`,`<button class="btn" onclick="openStudentImport()">${ic('upload',16)} Importer</button><button class="btn" onclick="openStudentExport()">${ic('file',16)} Exporter</button>`)};
+
+/* =====================================================================
+   LIENS : chaque indicateur, nom et compte mène à sa page
+   ===================================================================== */
+function canSee(p){try{return navFor().some(s=>s[1].some(i=>i[0]===p))}catch(e){return true}}
+
+/* Indicateurs : destination selon le libellé */
+const KPI_GO=[
+ [/^Élèves inscrits|^Mes élèves/,()=>ui.role==='teacher'?"go('classes')":"go('eleves')"],
+ [/^Encaissé/,()=>"go('scolarite',{},'enc')"],
+ [/^Impayés|^Reste à payer|^Prochaine échéance/,()=>ui.role==='parent'?"go('paiements')":"go('recouvrement')"],
+ [/^Trésorerie/,()=>"go('tresorerie')"],
+ [/^Présence|^Absences|^Appels à faire/,()=>"go('presences')"],
+ [/^Moyenne générale/,()=>ui.role==='parent'?"go('notes')":"go('bulletins')"],
+ [/^Demandes d’inscription/,()=>"go('inscriptions')"],
+ [/^Cours /,()=>"go('edt')"],
+ [/^Messages/,()=>"go('communication')"],
+ [/^Effectif/,()=>"go('salaries')"],
+ [/^Masse salariale/,()=>"ui.payMonth=curMonth();go('paie')"],
+ [/^Congés/,()=>"go('conges')"],
+ [/^Déclarations/,()=>"go('declarations')"]];
+function kpiGo(label){if(ui.page!=='dashboard')return '';const m=KPI_GO.find(([r])=>r.test(label));if(!m)return '';const js=m[1]();const p=(js.match(/go\('([a-z]+)'/)||[])[1];return p&&canSee(p)?js:''}
+function kpi(label,value,sub='',icon='',tone='t-indigo',title=''){const g=kpiGo(label);return `<div class="card kpi${g?' click':''}"${g?` onclick="${g}" title="Ouvrir"`:''}><div class="label">${label}${g?`<span class="kpi-go">${ic('chevronRight',13)}</span>`:''}</div><div class="value" ${title?`title="${esc(title)}"`:''}>${value}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`}
+
+/* Noms d'élèves, de salariés et numéros de compte cliquables partout */
+function linkTargets(){const st={},em={};for(const s of students())st[s.name]=s.id;for(const e of S.employees)em[empName(e)]=e.id;return{st,em}}
+function stuLink(id){if(ui.role==='parent')return null;if(ui.role==='teacher')return ()=>openStudentEdu(id);if(!canSee('eleves'))return null;return ()=>openStudent(id)}
+function empLink(id){if(ui.role!=='admin'||!canSee('salaries'))return null;return ()=>openEmp(id)}
+function bind(el,fn){if(!fn)return;el.classList.add('lnk');el.addEventListener('click',ev=>{ev.stopPropagation();fn()})}
+function linkify(root){if(!ui.user||!S)return;let T;const t=()=>T||(T=linkTargets());
+ root.querySelectorAll('.person:not([data-l]),.list-item:not([data-l])').forEach(el=>{el.dataset.l=1;if(el.closest('[onclick]')||el.closest('.paper')||el.closest('.sidebar')||el.closest('.topbar'))return;
+  const n=el.querySelector('.n,.fw5,.fw6');if(!n)return;const name=n.textContent.trim();const sid=t().st[name],eid=t().em[name];
+  const fn=sid?stuLink(sid):eid?empLink(eid):null;if(!fn)return;if(el.classList.contains('list-item')){el.classList.add('click');el.addEventListener('click',fn)}else bind(n,fn)});
+ if(canSee('compta'))root.querySelectorAll('span.acc:not([data-l])').forEach(el=>{el.dataset.l=1;if(el.closest('[onclick]')||el.closest('.paper')||el.closest('select'))return;const a=el.textContent.trim();if(!/^\d{3,8}$/.test(a))return;bind(el,()=>{closeModal();ui.f.compta={acc:a};ui.tab.compta='gl';go('compta',{},'gl')})})}
+(function(){let q=false;const run=()=>{q=false;try{linkify(document.getElementById('app'));linkify(document.getElementById('modal-root'))}catch(e){console.error(e)}};
+ const obs=new MutationObserver(()=>{if(!q){q=true;queueMicrotask(run)}});
+ window.addEventListener('DOMContentLoaded',()=>{for(const id of ['app','modal-root']){const el=document.getElementById(id);if(el)obs.observe(el,{childList:true,subtree:true})}});
+ if(document.readyState!=='loading')for(const id of ['app','modal-root']){const el=document.getElementById(id);if(el)obs.observe(el,{childList:true,subtree:true})}})();
 
 boot();
 

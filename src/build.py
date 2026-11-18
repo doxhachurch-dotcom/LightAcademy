@@ -1,5 +1,5 @@
 css=open('style.css').read()+open('theme.css').read()
-js='\n'.join(open(f).read() for f in ['core.js','data.js','logic.js','views1.js','views2.js','views3.js','school.js','edu.js','access.js','io.js'])+'\nboot();\n'
+js='\n'.join(open(f).read() for f in ['core.js','data.js','logic.js','views1.js','views2.js','views3.js','school.js','edu.js','access.js','io.js','links.js'])+'\nboot();\n'
 html=f'''<!DOCTYPE html>
 <html lang="fr">
 <head>

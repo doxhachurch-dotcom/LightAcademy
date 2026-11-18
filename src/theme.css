@@ -255,3 +255,50 @@ td{padding:10px 16px;font-size:13.5px}
 .ccard-body{padding:14px 16px 16px}.ccard-body h4{font-size:15px}
 @media (max-width:1180px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){.page-head h1{font-size:22px}.kpi .value{font-size:19px}.content{padding:16px 14px 40px}}
+/* =====================================================================
+   TYPOGRAPHIE PLUS PETITE, ALLURE PLUS SOBRE, ÉLÉMENTS CLIQUABLES
+   ===================================================================== */
+body{font-size:13px}
+.content{padding:22px 32px 44px}
+.page-head{margin-bottom:16px;align-items:flex-end}
+.page-head h1{font-size:21px;font-weight:600;letter-spacing:-.015em}
+.page-head p,.eyebrow{font-size:12.5px}
+.kpi{padding:14px 16px}
+.kpi .label{font-size:12px;justify-content:space-between}
+.kpi .value{font-size:20px;font-weight:600}
+.kpi .sub{font-size:11.5px}
+.kpi.click{cursor:pointer}.kpi.click:hover{background:#f8fafc}
+.kpi-go{color:#b4bccb;display:inline-flex}.kpi.click:hover .kpi-go{color:var(--primary)}
+.acct-card .bal{font-size:18px}
+.card,.grid.kpis{border-radius:8px;box-shadow:none}
+.card-head{padding:11px 16px;min-height:46px}
+.card-head h3{font-size:13px;font-weight:600}
+.card-body{padding:16px}
+.list-item{padding:9px 16px;gap:10px}
+.btn{height:32px;font-size:12.5px;padding:0 12px;border-radius:6px;box-shadow:none}
+.btn-sm{height:28px;font-size:12px}.btn-xs{height:24px;font-size:11.5px}
+.input{height:32px;font-size:13px;border-radius:6px}.input.sm{height:28px;font-size:12.5px}
+.tabs{gap:20px;margin-bottom:16px}.tab{font-size:13px}
+th{font-size:10.5px;padding:8px 14px}
+td{padding:8px 14px;font-size:12.5px}
+.person .s,.xs{font-size:11.5px}.sm{font-size:12.5px}
+.badge{font-size:11px;border-radius:4px;padding:1px 6px}
+.ic-box{width:28px;height:28px;border-radius:6px;background:#f2f4f7!important;color:#475467!important}
+.date-chip{width:40px;height:44px;border-radius:6px;background:#f2f4f7}
+.org-ini{border-radius:6px}
+.logo-sq{background:#1f52e5;border-radius:7px;width:32px;height:32px;font-size:16px}
+.sidebar{--sb:248px}
+.brand{height:58px}.brand-name{font-size:15px;font-weight:600}
+.nav a{font-size:13px;padding:6px 10px;gap:10px;border-radius:6px}
+.nav a svg{width:16px;height:16px}
+.nav-section{font-size:10px;padding:14px 10px 4px}
+.topbar{height:56px}
+.top-search .input{height:34px;font-size:13px;border-radius:6px}
+.top-ic,.me{width:34px;height:34px;border-radius:6px;font-size:12.5px}
+.modal-head h3{font-size:15px}
+.field label{font-size:12.5px}
+.ccard-body h4{font-size:14px}
+.lnk{cursor:pointer}.lnk:hover{color:var(--primary);text-decoration:underline;text-underline-offset:2px}
+span.acc.lnk:hover{text-decoration:none;background:#e8eefc}
+.tl-card.click{cursor:pointer}.tl-card.click:hover{filter:brightness(.98)}
+@media (max-width:600px){.page-head h1{font-size:19px}.kpi .value{font-size:17px}}
