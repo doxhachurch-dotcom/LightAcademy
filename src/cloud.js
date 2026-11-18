@@ -43,9 +43,11 @@ async function cloudEnter(){const sb=await sbClient();const {data:{session}}=awa
  const m=ms[0];if(m.role==='parent'){await sb.auth.signOut();lgBusy(false);return lgMsg('L’espace parent en ligne n’est pas encore ouvert. Contactez l’école.')}
  const {data:rows,error:e2}=await sb.from('school_state').select('key,data,updated_at').eq('school_id',m.school_id);if(e2)throw e2;
  CL={sid:m.school_id,school:m.schools&&m.schools.name,email,member:m,hashes:{},last:null,rev:null,pending:false,timer:null,status:'ok',members:[]};
- if(!rows.length){CL.status='pending';S.users=[];pushNow(true)}else applyRows(rows,true);
+ const imp=rows.find(r=>r.key==='_import');
+ if(imp&&!rows.some(r=>r.key==='clients')){buildFromImport(imp.data);CL.status='pending';await pushNow(true);if(!CL.pending)await sb.from('school_state').delete().eq('school_id',CL.sid).eq('key','_import')}
+ else if(!rows.length){CL.status='pending';S.users=[];pushNow(true)}else applyRows(rows,true);
  await refreshMembers();await readRev();writeMeta();enterAs(m);startWatch()}
-function applyRows(rows,full){if(full){const keep=S;S={};}for(const r of rows){S[r.key]=r.data;CL.hashes[r.key]=fnv(JSON.stringify(r.data));if(!CL.last||r.updated_at>CL.last)CL.last=r.updated_at}S.users=[];CACHE={};try{localStorage.setItem(cacheKey(CL.sid),JSON.stringify(S))}catch(e){}}
+function applyRows(rows,full){if(full){const keep=S;S={};}for(const r of rows){if(r.key==='_import')continue;S[r.key]=r.data;CL.hashes[r.key]=fnv(JSON.stringify(r.data));if(!CL.last||r.updated_at>CL.last)CL.last=r.updated_at}S.users=[];CACHE={};try{localStorage.setItem(cacheKey(CL.sid),JSON.stringify(S))}catch(e){}}
 function enterAs(m){const u={id:'cloud:'+m.email,name:m.name||m.email,email:m.email,role:m.role,active:true,employeeId:m.employee_id||null,studentIds:m.student_ids||[]};if(u.role==='prof'&&!(u.employeeId&&emp(u.employeeId)))u.employeeId=S.persona&&S.persona.teacher;setAccess(u);closeModal();render();window.scrollTo(0,0);toast('Connecté à '+(CL.school||'votre établissement'))}
 function writeMeta(){try{localStorage.setItem(CLOUD_META,JSON.stringify({sid:CL.sid,school:CL.school,email:CL.email,member:CL.member,hashes:CL.hashes,last:CL.last}))}catch(e){}}
 async function refreshMembers(){const {data}=await SB.from('members').select('*').eq('school_id',CL.sid).order('created_at');CL.members=data||[]}
@@ -66,7 +68,7 @@ function blankState(){const k=['clients','invoices','quotes','purchases','txs','
 /* ---------- enregistrement en ligne ---------- */
 const _saveLocal=save;
 save=function(){if(!CL)return _saveLocal();CACHE={};try{localStorage.setItem(cacheKey(CL.sid),JSON.stringify(S))}catch(e){}CL.pending=true;setSync('pending');clearTimeout(CL.timer);CL.timer=setTimeout(pushNow,1500)};
-async function pushNow(first){if(!CL||!SB)return;clearTimeout(CL.timer);const rows=[],h={};for(const k of Object.keys(S)){if(k==='users')continue;const j=JSON.stringify(S[k]);if(j===undefined)continue;const x=fnv(j);if(CL.hashes[k]!==x){rows.push({school_id:CL.sid,key:k,data:S[k],updated_by:CL.email});h[k]=x}}
+async function pushNow(first){if(!CL||!SB)return;clearTimeout(CL.timer);const rows=[],h={};for(const k of Object.keys(S)){if(k==='users'||k==='_import')continue;const j=JSON.stringify(S[k]);if(j===undefined)continue;const x=fnv(j);if(CL.hashes[k]!==x){rows.push({school_id:CL.sid,key:k,data:S[k],updated_by:CL.email});h[k]=x}}
  if(!rows.length){CL.pending=false;setSync('ok');return}setSync('saving');
  try{for(let i=0;i<rows.length;i+=6){const {error}=await SB.from('school_state').upsert(rows.slice(i,i+6),{onConflict:'school_id,key'});if(error)throw error}Object.assign(CL.hashes,h);CL.pending=false;await readRev();const {data}=await SB.from('school_state').select('updated_at').eq('school_id',CL.sid).order('updated_at',{ascending:false}).limit(1);if(data&&data[0])CL.last=data[0].updated_at;writeMeta();setSync('ok')}
  catch(e){console.error(e);CL.pending=true;setSync('offline');clearTimeout(CL.timer);CL.timer=setTimeout(pushNow,15000)}}
