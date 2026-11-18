@@ -1,4 +1,4 @@
-# Doxha École – Gestion scolaire et financière
+# Light Academy – Gestion scolaire et financière
 
 Logiciel de gestion d'école privée (scolarité, finances, comptabilité SYSCOHADA, paie), pensé pour l'Afrique et l'international.
 
@@ -16,7 +16,7 @@ Ouvrez **`index.html`** dans un navigateur (Chrome, Edge, Firefox, Safari). Aucu
 | Fichier | Rôle |
 |---|---|
 | `style.css` | Styles de base (mise en page, tableaux, formulaires, modales) |
-| `theme.css` | Habillage DOXHA (couleurs, cartes, emploi du temps, messagerie…) |
+| `theme.css` | Habillage visuel (couleurs, cartes, emploi du temps, messagerie…) |
 | `core.js` | Utilitaires : dates, devises, icônes, modales, graphiques |
 | `data.js` | Plans comptables (SYSCOHADA, PCG), pays, barèmes et moteur de paie |
 | `logic.js` | Grand livre, balances, TVA, écritures de paie, déclarations |
