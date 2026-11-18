@@ -52,3 +52,13 @@ L'ordre des fichiers compte : chaque fichier peut redéfinir des fonctions des p
 - Données stockées dans le navigateur uniquement : pas de comptes utilisateurs ni de base de données partagée (étape suivante : Supabase).
 - Barèmes de paie et de TVA préremplis à partir de sources publiques 2025-2026 : à faire valider par un expert-comptable de chaque pays.
 - Les relances WhatsApp ouvrent un message prérempli ; aucun envoi automatique, aucun paiement en ligne réel, aucune télédéclaration.
+
+## Base de données en ligne (Supabase)
+
+- Projet Supabase : **Light Academy** (`nxlizxdokrzxqbrghvgw`, région Paris), organisation DoxhaCHURCH.
+- Tables : `schools` (établissements), `members` (accès par adresse e-mail et rôle), `school_state` (données de l'école, une ligne par rubrique).
+- Sécurité (RLS) : chaque membre ne voit que son établissement ; seuls les administrateurs gèrent les accès ; les comptes parents n'ont pas encore accès aux données.
+- Les comptes `@lightacademy.com` restent des comptes de démonstration locaux.
+- Toute autre adresse se connecte à Supabase : « Première connexion ? Créer mon mot de passe », puis création de l'établissement ou accès à l'école qui a ajouté cette adresse.
+- Les données sont aussi gardées sur l'appareil : sans connexion internet, on continue à travailler et l'envoi reprend au retour du réseau.
+- Clé utilisée dans `src/cloud.js` : clé publique (publishable), sans risque côté navigateur.
