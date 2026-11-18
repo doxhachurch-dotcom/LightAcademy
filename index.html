@@ -248,7 +248,7 @@ td,th{padding-left:12px;padding-right:12px}
 .toast-root{left:12px;right:12px}
 }
 /* ===== Thème DOXHA (aligné sur DOXHA Church) ===== */
-:root{--primary:#1f52e5;--primary-600:#1a46c7;--primary-50:#eef2fe;--primary-100:#dfe6fd;--bg:#f9f9fb;--border:#e9edf3;--border2:#dfe4ec;--text:#111a2e;--text2:#334155;--muted:#64748b;--subtle:#94a3b8;--radius:16px;--sb:300px}
+:root{--primary:#1f52e5;--primary-600:#1a46c7;--primary-50:#eef2fe;--primary-100:#dfe6fd;--bg:#f9f9fb;--border:#e9edf3;--border2:#dfe4ec;--text:#111a2e;--text2:#334155;--muted:#64748b;--subtle:#94a3b8;--radius:16px;--sb:272px}
 body{background:#f9f9fb;color:var(--text)}
 .main{background:linear-gradient(180deg,#f2f5fe 0,#f9f9fb 300px)}
 /* sidebar */
@@ -446,6 +446,64 @@ td.editable{border-radius:6px}
 .map-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 12px}
 .map-grid label{font-size:12px}
 @media (max-width:700px){.fmt-grid{grid-template-columns:repeat(2,1fr)}.col-grid{grid-template-columns:1fr 1fr}.map-grid{grid-template-columns:1fr 1fr}}
+/* =====================================================================
+   FINITIONS : interface plus dense et plus sobre
+   ===================================================================== */
+body{font-size:13.5px;letter-spacing:-.003em}
+.content{padding:26px 36px 48px;max-width:1380px}
+.page-head{margin-bottom:18px}
+.page-head h1{font-size:25px;font-weight:650;letter-spacing:-.022em}
+.eyebrow{font-size:13px;margin-bottom:4px}
+/* bandeau d'indicateurs */
+.grid.kpis{gap:1px;background:#e9edf3;border:1px solid #e9edf3;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.03)}
+.grid.kpis>*{border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff;transform:none!important}
+.kpi{padding:16px 18px}
+.kpi .label{flex-direction:row;align-items:center;gap:8px;font-size:12.5px;font-weight:500}
+.kpi .ic-box{display:none}
+.kpi .value{font-size:23px;font-weight:650;margin-top:4px;letter-spacing:-.02em}
+.kpi .sub{font-size:12px;margin-top:2px}
+.acct-card .bal{font-size:20px}
+/* cartes */
+.card{border-radius:12px;border-color:#e9edf3;box-shadow:0 1px 2px rgba(16,24,40,.03)}
+.card-head{padding:13px 18px;min-height:52px}
+.card-head h3{font-size:14px}
+.card-body{padding:18px}
+.list-item{padding:11px 18px}
+.mt{margin-top:14px}
+/* boutons */
+.btn{height:36px;border-radius:8px;font-size:13.5px;padding:0 13px;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.btn-primary{background:#1f52e5;border-color:#1f52e5;box-shadow:0 1px 2px rgba(16,24,40,.08)}
+.btn-primary:hover{background:#1a46c7}
+.btn-sm{height:32px;font-size:13px}.btn-xs{height:26px}
+.input{height:36px;border-radius:8px;box-shadow:none}
+.input.sm{height:32px}
+/* onglets & tableaux */
+.tabs{gap:22px;margin-bottom:18px}
+.tab{font-size:14px;padding:6px 0 9px}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:#8a94a6;padding:9px 16px}
+td{padding:10px 16px;font-size:13.5px}
+.person .s{font-size:12px}
+.badge{font-size:11.5px;padding:1px 8px}
+/* navigation */
+.sidebar{--sb:272px}
+.brand{height:68px}
+.brand-name{font-size:17px}
+.nav a{font-size:14px;padding:7px 11px;gap:11px}
+.nav-section{padding:14px 11px 4px}
+.org-card{padding:10px 12px;border-radius:12px}
+.org-ini{width:34px;height:34px;font-size:12.5px}
+.topbar{height:64px}
+.top-search .input{height:40px;border-radius:10px;font-size:14px}
+.top-ic{width:40px;height:40px;border-radius:10px}
+.me{width:40px;height:40px;border-radius:10px;font-size:14px;box-shadow:none}
+/* textes d'aide : uniquement dans les fenêtres */
+.content .note:not(.warn):not(.ok){display:none}
+.empty{padding:32px 20px;font-size:13.5px}
+/* cartes de classe un peu plus compactes */
+.ccard-top{height:72px}.tile{width:54px;height:54px;top:14px}.tile b{font-size:17px}
+.ccard-body{padding:14px 16px 16px}.ccard-body h4{font-size:15px}
+@media (max-width:1180px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.page-head h1{font-size:22px}.kpi .value{font-size:19px}.content{padding:16px 14px 40px}}
 </style>
 </head>
 <body>
@@ -1284,7 +1342,7 @@ VIEWS.recouvrement=function(){const f=F();const late=lateStudents();const lateAm
  return head('Recouvrement',`${late.length} familles en retard · ${money(lateAmt)} échus`,`<button class="btn" onclick="openRelanceAll()">${ic('send',16)} Relance groupée</button>`)+
  `<div class="grid kpis mb">${kpi('Impayés échus',`<span class="neg">${mshort(lateAmt)}</span>`,late.length+' familles concernées','alert','t-rose',money(lateAmt))}${kpi('Taux de recouvrement',pct(dueAmt?paidDue/dueAmt:1,1),'Sur les échéances passées','checkCircle','t-emerald')}${kpi('Reliquat '+'2025-2026',mshort(old),'Créances de l’année précédente','clock','t-amber',money(old))}${kpi('Relancées',String(Object.keys(S.relances).filter(k=>late.some(s=>s.id===k)).length),'Familles relancées','send','t-sky')}</div>
  ${classCards(l=>`setF('c','${esc(l.name)}')`)}
- <div class="card"><div class="card-head"><h3>Familles en retard ${f.c?'· '+esc(f.c)+' <button class="link xs" onclick="setF(\'c\',\'\')">effacer</button>':''}</h3><div class="input-ic" style="width:260px">${ic('search',16)}<input id="q-rec" class="input sm" placeholder="Rechercher" value="${esc(f.q||'')}" oninput="setF('q',this.value,'q-rec')"></div></div><div class="table-wrap"><table><thead><tr><th>Élève</th><th class="hide-md">Parent / tuteur</th><th class="num">Échu impayé</th><th class="hide-sm">Retard</th><th class="hide-md">Relance</th><th></th></tr></thead><tbody>${list.map(s=>{const b=stuBal(s);const days=Math.round((pd(TODAY)-pd(b.oldest))/864e5);return `<tr><td><div class="person click" style="cursor:pointer" onclick="openStudent('${s.id}')">${avatar(s.name,30)}<div class="min0"><div class="n">${esc(s.name)}</div><div class="s">${esc(s.classe)}</div></div></div></td><td class="hide-md"><div class="sm">${esc(s.parent.name)}</div><div class="xs muted">${esc(s.parent.phone)}</div></td><td class="num fw6 neg">${money(b.late)}</td><td class="hide-sm">${badge(days+' j',days>60?'b-red':days>20?'b-amber':'b-gray',false)}</td><td class="hide-md sm muted">${S.relances[s.id]?fds(S.relances[s.id]):'Jamais'}</td><td class="num"><div class="flex" style="justify-content:flex-end"><button class="btn btn-xs" onclick="openRelance('${s.id}')">${ic('send',12)} Relancer</button><button class="btn btn-xs btn-primary" onclick="openEncaisser(null,'${s.id}')">Encaisser</button></div></td></tr>`}).join('')||'<tr><td colspan="6"><div class="empty">Aucune famille en retard 🎉</div></td></tr>'}</tbody></table></div></div>`};
+ <div class="card"><div class="card-head"><h3>Familles en retard ${f.c?'· '+esc(f.c)+' <button class="link xs" onclick="setF(\'c\',\'\')">effacer</button>':''}</h3><div class="input-ic" style="width:260px">${ic('search',16)}<input id="q-rec" class="input sm" placeholder="Rechercher" value="${esc(f.q||'')}" oninput="setF('q',this.value,'q-rec')"></div></div><div class="table-wrap"><table><thead><tr><th>Élève</th><th class="hide-md">Parent / tuteur</th><th class="num">Échu impayé</th><th class="hide-sm">Retard</th><th class="hide-md">Relance</th><th></th></tr></thead><tbody>${list.map(s=>{const b=stuBal(s);const days=Math.round((pd(TODAY)-pd(b.oldest))/864e5);return `<tr><td><div class="person click" style="cursor:pointer" onclick="openStudent('${s.id}')">${avatar(s.name,30)}<div class="min0"><div class="n">${esc(s.name)}</div><div class="s">${esc(s.classe)}</div></div></div></td><td class="hide-md"><div class="sm">${esc(s.parent.name)}</div><div class="xs muted">${esc(s.parent.phone)}</div></td><td class="num fw6 neg">${money(b.late)}</td><td class="hide-sm">${badge(days+' j',days>60?'b-red':days>20?'b-amber':'b-gray',false)}</td><td class="hide-md sm muted">${S.relances[s.id]?fds(S.relances[s.id]):'Jamais'}</td><td class="num"><div class="flex" style="justify-content:flex-end"><button class="btn btn-xs" onclick="openRelance('${s.id}')">${ic('send',12)} Relancer</button><button class="btn btn-xs btn-primary" onclick="openEncaisser(null,'${s.id}')">Encaisser</button></div></td></tr>`}).join('')||'<tr><td colspan="6"><div class="empty">Aucune famille en retard</div></td></tr>'}</tbody></table></div></div>`};
 function relanceText(s){const b=stuBal(s);return `Bonjour ${s.parent.name}, sauf erreur de notre part, il reste ${money(b.late)} à régler pour la scolarité de ${s.name} (${s.classe}), échu depuis le ${fds(b.oldest)}. Vous pouvez payer à la caisse de l’école, par ${country().mm[0]} au ${S.company.phone} ou par virement. Merci de votre confiance. – L’économat, ${S.company.name}`}
 function openRelance(id){const s=client(id);const msg=relanceText(s);modal('Relancer la famille',`<div class="flex mb">${avatar(s.name,40)}<div><div class="fw6">${esc(s.parent.name)}</div><div class="sm muted">${esc(s.parent.phone)} · parent de ${esc(s.name)}</div></div></div><textarea class="input" rows="6" id="msg">${esc(msg)}</textarea>`,`<button class="btn" onclick="copyText(val('msg'),'Message copié');markRelance('${id}')">${ic('copy',16)} Copier pour SMS</button><a class="btn btn-primary" target="_blank" rel="noopener" style="text-decoration:none" href="${waLink(s.parent.phone,msg)}" onclick="markRelance('${id}')">Envoyer par WhatsApp</a>`)}
 function markRelance(id){S.relances[id]=TODAY;save();setTimeout(()=>{render()},50)}
@@ -1483,7 +1541,7 @@ function suiviAbs(){const f=F();if(!f.j)f.j='nj';const base=ui.role==='teacher'?
  <div class="card"><div class="toolbar"><select class="input w-auto" onchange="setF('c',this.value)"><option value="">Toutes les classes</option>${options((ui.role==='teacher'?myClasses():S.classes).map(c=>[c.id,c.name]),f.c)}</select><select class="input w-auto" onchange="setF('t',this.value)"><option value="">Absences et retards</option>${options([['absent','Absences'],['retard','Retards']],f.t)}</select><div class="seg">${[['nj','Non justifiées'],['j','Justifiées'],['all','Toutes']].map(([k,l])=>`<button class="${f.j===k?'active':''}" onclick="setF('j','${k}')">${l}</button>`).join('')}</div></div>
  <div class="table-wrap"><table><thead><tr><th>Date</th><th>Élève</th><th class="hide-sm">Classe</th><th>Type</th><th class="hide-md">Motif</th><th></th></tr></thead><tbody>${L.slice(0,lim).map(a=>{const s=client(a.studentId);return `<tr><td class="sm">${fds(a.date)}</td><td><div class="person">${avatar(s.name,28)}<span class="n">${esc(s.name)}</span></div></td><td class="hide-sm">${esc(s.classe)}</td><td>${a.status==='absent'?badge('Absence','b-red'):badge('Retard'+(a.minutes?' '+a.minutes+' min':''),'b-amber')}</td><td class="hide-md sm">${a.justified?esc(a.motif||'Justifiée'):'<span class="muted">—</span>'}</td><td class="num">${a.justified?badge('Justifiée','b-green'):`<button class="btn btn-xs" onclick="openJustify('${a.id}')">Justifier</button>`}</td></tr>`}).join('')||'<tr><td colspan="6"><div class="empty">Aucune absence</div></td></tr>'}</tbody></table></div><div class="table-foot"><span>${L.length} ligne(s)</span>${L.length>lim?`<button class="btn btn-sm" onclick="more()">Afficher plus</button>`:''}</div></div>`}
 function openJustify(id){modal('Justifier l’absence',`${selectF('Motif','jf-m',['Maladie','Rendez-vous médical','Raison familiale','Transport','Autre'].map(x=>[x,x]),'Maladie',{full:true})}${field('Commentaire','jf-c','',{full:true})}`,`<button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="const a=S.attendance.find(x=>x.id==='${id}');a.justified=true;a.motif=val('jf-m')+(val('jf-c')?' – '+val('jf-c'):'');save();closeModal();render();toast('Absence justifiée')">Valider</button>`)}
-function parentAbs(){const k=curKid();const L=attOf(k.id);return head('Absences & retards',esc(k.name)+' · '+esc(k.classe),`<button class="btn btn-primary" onclick="openSignal()">${ic('plus',16)} Signaler une absence</button>`)+kidSwitch()+`<div class="grid kpis mb">${kpi('Absences',String(L.filter(a=>a.status==='absent').length),'Depuis la rentrée','alert','t-rose')}${kpi('Non justifiées',String(L.filter(a=>a.status==='absent'&&!a.justified).length),'À justifier','file','t-amber')}${kpi('Retards',String(L.filter(a=>a.status==='retard').length),'Depuis la rentrée','clock','t-violet')}${kpi('Présence',pct(presenceRate([k],lastSchoolDays(TODAY,40)),1),'40 derniers jours','checkCircle','t-emerald')}</div><div class="card">${L.map(a=>`<div class="list-item"><span class="ic-box ${a.status==='absent'?'t-rose':'t-amber'}">${ic(a.status==='absent'?'alert':'clock',15)}</span><div class="grow"><div class="fw5">${a.status==='absent'?'Absence':'Retard'} · ${ucf(pd(a.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))}</div><div class="xs muted">${a.justified?esc(a.motif||'Justifiée'):'Non justifiée'}</div></div>${a.justified?badge('Justifiée','b-green'):`<button class="btn btn-xs" onclick="openJustify('${a.id}')">Justifier</button>`}</div>`).join('')||'<div class="empty">Aucune absence 🎉</div>'}</div>`}
+function parentAbs(){const k=curKid();const L=attOf(k.id);return head('Absences & retards',esc(k.name)+' · '+esc(k.classe),`<button class="btn btn-primary" onclick="openSignal()">${ic('plus',16)} Signaler une absence</button>`)+kidSwitch()+`<div class="grid kpis mb">${kpi('Absences',String(L.filter(a=>a.status==='absent').length),'Depuis la rentrée','alert','t-rose')}${kpi('Non justifiées',String(L.filter(a=>a.status==='absent'&&!a.justified).length),'À justifier','file','t-amber')}${kpi('Retards',String(L.filter(a=>a.status==='retard').length),'Depuis la rentrée','clock','t-violet')}${kpi('Présence',pct(presenceRate([k],lastSchoolDays(TODAY,40)),1),'40 derniers jours','checkCircle','t-emerald')}</div><div class="card">${L.map(a=>`<div class="list-item"><span class="ic-box ${a.status==='absent'?'t-rose':'t-amber'}">${ic(a.status==='absent'?'alert':'clock',15)}</span><div class="grow"><div class="fw5">${a.status==='absent'?'Absence':'Retard'} · ${ucf(pd(a.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))}</div><div class="xs muted">${a.justified?esc(a.motif||'Justifiée'):'Non justifiée'}</div></div>${a.justified?badge('Justifiée','b-green'):`<button class="btn btn-xs" onclick="openJustify('${a.id}')">Justifier</button>`}</div>`).join('')||'<div class="empty">Aucune absence enregistrée</div>'}</div>`}
 function openSignal(){modal('Signaler une absence',`<div class="form-grid">${field('Date','sg-d',TODAY,{type:'date'})}${selectF('Motif','sg-m',['Maladie','Rendez-vous médical','Raison familiale','Autre'].map(x=>[x,x]),'Maladie')}${field('Précisions','sg-c','',{full:true})}</div>`,`<button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="S.attendance.push({id:uid('at'),date:val('sg-d'),studentId:curKid().id,status:'absent',justified:true,motif:'Signalée par la famille – '+val('sg-m')+(val('sg-c')?' : '+val('sg-c'):'')});save();closeModal();render();toast('Absence signalée à l’école')">Envoyer</button>`)}
 
 /* ================= NOTES & ÉVALUATIONS ================= */
