@@ -310,3 +310,8 @@ tfoot td{font-weight:600;background:#fafbfc}
 .sync{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);white-space:nowrap}
 .sync i{width:7px;height:7px;border-radius:50%;background:#12b76a}
 .sync.wait i{background:#f79009}.sync.off i{background:#98a2b3}.sync.off{color:#b54708}
+.tt-cell.add{display:grid;place-items:center;cursor:pointer;color:transparent;transition:background .15s}
+.tt-cell.add:hover{background:#eef3ff;color:var(--primary)}
+.lesson.edit{cursor:pointer}.lesson.edit:hover{filter:brightness(.97);box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent)}
+.cal-ev[onclick]{cursor:pointer}.cal-ev[onclick]:hover{filter:brightness(.95)}
+.slot-grid{display:grid;gap:8px}.slot-row{display:grid;grid-template-columns:90px 1fr 20px 1fr;align-items:center;gap:8px}
