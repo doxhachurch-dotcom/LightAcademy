@@ -70,3 +70,7 @@ L'ordre des fichiers compte : chaque fichier peut redéfinir des fonctions des p
 - Si un collègue a modifié les mêmes données entre-temps, les deux versions sont fusionnées (les élèves, paiements, etc. des deux côtés sont gardés).
 - `manifest.webmanifest` et les icônes permettent d'installer Light Academy comme une application sur téléphone ou ordinateur.
 - Ces fichiers sont dans `public/` et copiés à la racine par `npm run assemble` : ils doivent être publiés à côté de `index.html`.
+
+## Application mobile (Android / iPhone)
+
+Le dossier **`mobile/`** contient l'application mobile Light Academy (Expo / React Native), branchée sur la même base Supabase que le CRM web : équipe (encaissements, reçus WhatsApp, appel, relances, hors ligne) et espace parent. Mode d'emploi : `mobile/README.md`.
