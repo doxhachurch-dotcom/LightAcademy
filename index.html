@@ -2365,6 +2365,44 @@ function addPageButtons(){const a=document.querySelector('.content .page-head .a
 const _openPurFormBase=openPurForm;
 openPurForm=function(id){if(!id&&!S.suppliers.length){modal('Nouvelle dépense',`<p>Ajoutez d’abord le fournisseur (ou la personne payée), puis la dépense.</p>`,`<button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="closeModal();openSupForm()">Ajouter un fournisseur</button>`);return}return _openPurFormBase(id)};
 
+/* ================= BASE VIDE : classes + garde-fous ================= */
+function stdSubjects(){const cc=S.country;const sec=cc==='CD'?'Secondaire':'Collège';const P=['Primaire',sec];return [{id:'fr',name:'Français',short:'FRA',coef:4,hours:6,color:'#1f52e5',cycles:P},{id:'ma',name:'Mathématiques',short:'MAT',coef:4,hours:6,color:'#0ea5e9',cycles:P},{id:'an',name:'Anglais',short:'ANG',coef:2,hours:2,color:'#ec4899',cycles:P},{id:'hg',name:'Histoire-Géographie',short:'HG',coef:2,hours:2,color:'#f59e0b',cycles:P},{id:'sc',name:cc==='CD'?'Sciences – Biologie':'Sciences (SVT)',short:'SCI',coef:2,hours:3,color:'#10b981',cycles:P},{id:'pc',name:'Physique-Chimie',short:'PC',coef:2,hours:2,color:'#8b5cf6',cycles:[sec]},{id:'ec',name:'Éducation civique et morale',short:'ECM',coef:1,hours:1,color:'#64748b',cycles:P},{id:'ep',name:'Éducation physique',short:'EPS',coef:1,hours:2,color:'#ef4444',cycles:P},{id:'ev',name:'Éveil et langage',short:'ÉVE',coef:1,hours:8,color:'#f97316',cycles:['Maternelle']},{id:'gr',name:'Graphisme et dessin',short:'GRA',coef:1,hours:5,color:'#a855f7',cycles:['Maternelle']},{id:'mo',name:'Motricité et jeux',short:'MOT',coef:1,hours:5,color:'#14b8a6',cycles:['Maternelle']}]}
+function loadStdClasses(silent){const cc=S.country;const LV=LEVELS[cc]||LEVELS.default;const have=new Set(S.fees.map(f=>f.id));
+ for(const [id,name,cycle,scol] of LV){if(have.has(id))continue;S.fees.push(cc==='CD'?{id,name,cycle,scol,insc:0,reinsc:0}:{id,name,cycle,scol,insc:0,reinsc:0})}
+ S.fees.forEach((l,i)=>{if(!S.classes.find(c=>c.id===l.id))S.classes.push({id:l.id,name:l.name,cycle:l.cycle,room:'Salle '+(i+1),capacity:l.cycle==='Maternelle'?25:30,teacherId:null});S.assign[l.id]=S.assign[l.id]||{};S.timetable[l.id]=S.timetable[l.id]||[]});
+ if(!S.subjects.length)S.subjects=stdSubjects();if(silent)return;save();render();toast(S.classes.length+' classes créées · ajustez les tarifs dans Paramètres')}
+function classCycles(){const sec=S.country==='CD'?'Secondaire':'Collège';return['Maternelle','Primaire',sec]}
+function openClassForm(id){const c=id?S.classes.find(x=>x.id===id):{name:'',cycle:'Primaire',room:'Salle '+(S.classes.length+1),capacity:30,teacherId:null};const f=id?S.fees.find(x=>x.id===id)||{}:{scol:0,insc:0,reinsc:0};
+ const tch=[['','— Aucun pour l’instant —'],...S.employees.filter(e=>e.status!=='Sorti').map(e=>[e.id,tName(e)])];
+ modal(id?'Modifier la classe':'Nouvelle classe',`<div class="form-grid">${field('Nom de la classe','cf-n',c.name,{full:true,attrs:'placeholder="Ex. 1re primaire A"'})}${selectF('Cycle','cf-cy',classCycles().map(x=>[x,x]),c.cycle)}${field('Salle','cf-r',c.room)}${field('Nombre de places','cf-cap',c.capacity,{type:'number'})}${selectF('Titulaire','cf-t',tch,c.teacherId||'')}${field((S.country==='CD'?'Minerval':'Scolarité')+' annuel ('+S.currency+')','cf-scol',f.scol||0,{type:'number'})}${field('Frais d’inscription','cf-in',f.insc||0,{type:'number'})}${field('Frais de réinscription','cf-re',f.reinsc||0,{type:'number'})}</div>`,
+ `${id&&!stuOfClass(id).length?`<button class="btn" style="margin-right:auto" onclick="delClass('${id}')">Supprimer</button>`:''}<button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveClass('${id||''}')">Enregistrer</button>`)}
+function saveClass(id){const name=val('cf-n').trim();if(!name){toast('Indiquez le nom de la classe');return}const d={name,cycle:val('cf-cy'),room:val('cf-r'),capacity:+val('cf-cap')||30,teacherId:val('cf-t')||null};const fee={scol:parseNum(val('cf-scol'))||0,insc:parseNum(val('cf-in'))||0,reinsc:parseNum(val('cf-re'))||0};
+ if(id){Object.assign(S.classes.find(c=>c.id===id),d);const f=S.fees.find(x=>x.id===id);if(f)Object.assign(f,{name,cycle:d.cycle},fee);else S.fees.push({id,name,cycle:d.cycle,...fee})}
+ else{const nid=uid('cl');S.classes.push({id:nid,...d});S.fees.push({id:nid,name,cycle:d.cycle,...fee});S.assign[nid]={};S.timetable[nid]=[]}
+ if(!S.subjects.length)S.subjects=stdSubjects();save();closeModal();render();toast(id?'Classe modifiée':'Classe créée')}
+function delClass(id){S.classes=S.classes.filter(c=>c.id!==id);S.fees=S.fees.filter(f=>f.id!==id);delete S.assign[id];delete S.timetable[id];save();closeModal();if(ui.params.classId)go('classes');else render();toast('Classe supprimée')}
+const _classesView=VIEWS.classes;VIEWS.classes=function(){
+ if(ui.role==='admin'&&!ui.params.classId&&!S.classes.length)return head('Classes & niveaux','Aucune classe pour l’instant',`<button class="btn btn-primary" onclick="openClassForm()">${ic('plus',16)} Nouvelle classe</button>`)+`<div class="card"><div class="card-body" style="text-align:center;padding:40px 20px"><h3 style="margin-bottom:6px">Commencez par créer vos classes</h3><p class="muted sm" style="margin-bottom:18px">Créez toutes les classes habituelles en un clic (de la crèche aux humanités), ou une par une.<br>Vous pourrez ensuite importer la liste des élèves.</p><div class="flex" style="justify-content:center;gap:10px"><button class="btn btn-primary" onclick="loadStdClasses()">Créer les classes habituelles</button><button class="btn" onclick="openClassForm()">Créer une classe</button><button class="btn" onclick="openStudentImport()">Importer un fichier élèves</button></div></div></div>`;
+ let out=_classesView();if(ui.role==='admin'){if(!ui.params.classId)out=out.replace(`${ic('calendar',16)} Emplois du temps</button>`,`${ic('calendar',16)} Emplois du temps</button><button class="btn btn-primary" onclick="openClassForm()">${ic('plus',16)} Nouvelle classe</button>`)}return out};
+
+/* garde-fous : on explique quoi faire au lieu de planter */
+function needFirst(title,msg,btn,act){modal(title,`<p>${msg}</p>`,`<button class="btn" onclick="closeModal()">Fermer</button>${btn?`<button class="btn btn-primary" onclick="closeModal();${act}">${btn}</button>`:''}`)}
+const NEED_CLASS=()=>needFirst('Aucune classe','Créez d’abord les classes de l’école.','Créer les classes',"go('classes')");
+const NEED_STU=()=>S.classes.length?needFirst('Aucun élève','Inscrivez d’abord un élève (ou importez la liste des élèves).','Inscrire un élève','openStudentForm()'):NEED_CLASS();
+const NEED_EMP=()=>needFirst('Aucun employé','Ajoutez d’abord un employé.','Ajouter un employé','openEmpForm()');
+function guardFn(name,test,fail){const f=window[name];if(typeof f!=='function')return;window[name]=function(...a){if(test(...a))return f.apply(this,a);return fail()}}
+guardFn('openStudentForm',id=>id||S.classes.length,NEED_CLASS);
+guardFn('openInscForm',id=>id||S.classes.length,NEED_CLASS);
+guardFn('openEncaisser',()=>students().length,NEED_STU);
+guardFn('openInvEditor',id=>id||students().length||S.clients.length,NEED_STU);
+guardFn('openNewSlip',()=>S.employees.some(e=>e.status!=='Sorti'),NEED_EMP);
+guardFn('openLeaveForm',id=>id||S.employees.length,NEED_EMP);
+guardFn('newThread',()=>S.employees.length||S.clients.length,()=>needFirst('Personne à contacter','Ajoutez d’abord des élèves ou des employés.'));
+guardFn('openAnnForm',()=>ui.role==='admin'||myClasses().length,()=>needFirst('Aucune classe','Aucune classe ne vous est encore attribuée.'));
+const _presView=VIEWS.presences;VIEWS.presences=function(){if(ui.role!=='parent'&&!(ui.role==='teacher'?myClasses():S.classes).length)return head('Présences','Appel quotidien, absences, retards et justificatifs','')+`<div class="card"><div class="card-body empty">Aucune classe pour l’instant${ui.role==='admin'?` · <button class="link" onclick="go('classes')">Créer les classes</button>`:''}</div></div>`;return _presView()};
+const _dashParent=dashParent;dashParent=function(){if(!(S.persona.children||[]).length||!curKid())return head('Accueil','Espace parent','')+'<div class="card"><div class="card-body empty">Aucun enfant n’est encore relié à votre compte. Contactez l’école.</div></div>';return _dashParent()};
+const _impSchool=importSchoolData;importSchoolData=function(data,opts){if(!S.fees.length||!S.classes.length)loadStdClasses(true);return _impSchool(data,opts)};
+
 boot();
 
 </script>
