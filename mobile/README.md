@@ -34,9 +34,20 @@ Application Android et iPhone du CRM Light Academy. Elle se branche **directemen
 
 **Parents** (comptes « Parent » créés dans Administration › Utilisateurs, avec les enfants rattachés)
 - **Accueil** : reste à payer, prochaine échéance, moyenne, présence, absences non justifiées, bulletin, annonces et agenda.
-- **Scolarité** : notes par matière avec la moyenne de la classe, absences, emploi du temps, et bulletin PDF une fois publié par l'école.
+- **Scolarité** :
+  - notes par matière ; en touchant une matière, chaque évaluation apparaît avec la moyenne de la classe ;
+  - absences, avec un bouton **Justifier** (motif en un toucher) et **Signaler une absence à venir** ;
+  - emploi du temps, et bulletin PDF une fois publié par l'école.
 - **Paiements** : échéances, reçus en PDF et façon de payer (numéro Mobile Money de l'école et référence de l'élève).
-- **L'école** : contacter l'école sur WhatsApp ou par appel, voir les annonces et l'agenda, gérer son compte.
+- **Messages** :
+  - conversations avec l'administration ou les enseignants de l'enfant, avec une pastille pour les réponses non lues ;
+  - annonces de l'école ;
+  - bouton WhatsApp de l'école pour les urgences.
+- **Mon compte** (rond avec les initiales, en haut à droite) : coordonnées de l'école, agenda, thème clair ou sombre, déconnexion.
+
+Ce que le parent envoie arrive dans le CRM web, au même endroit que si l'école l'avait saisi :
+- les messages vont dans **Communication** ; l'administration y voit ceux qui lui sont adressés, chaque enseignant ceux qui lui sont adressés ;
+- les justificatifs et les absences signalées vont dans **Présences**, avec la mention « Signalée par la famille ».
 
 ## Hors connexion
 - Les données de l'école restent sur le téléphone : l'app s'ouvre et s'affiche sans réseau.
@@ -46,11 +57,13 @@ Application Android et iPhone du CRM Light Academy. Elle se branche **directemen
 
 ## Sécurité de l'espace parent
 - Les parents **n'ont aucun accès** à la table `school_state` : la règle RLS `is_staff` l'interdit déjà.
-- Leurs données passent par la fonction Supabase **`parent_view()`**, déjà installée. Elle ne renvoie que :
-  - les enfants rattachés au compte ;
-  - leurs factures, reçus, absences et notes ;
-  - la moyenne de la classe, sans les notes des autres élèves ;
-  - les annonces destinées aux parents ou à la classe.
+- Tout passe par des fonctions Supabase qui vérifient que l'élève est bien rattaché au compte connecté :
+  - `parent_view()` : lecture ; elle ne renvoie que les enfants du parent, leurs factures, reçus, absences, notes et conversations, la moyenne de la classe (sans les notes des autres élèves) et les annonces destinées aux parents ou à la classe ;
+  - `parent_send_message()` : écrire uniquement à l'administration ou aux enseignants de l'enfant ;
+  - `parent_mark_read()` : marquer une réponse comme lue ;
+  - `parent_justify()` : justifier une absence de son enfant ;
+  - `parent_signal_absence()` : signaler une absence, de 7 jours avant à 3 mois après aujourd'hui.
+- Côté CRM web, la fusion des données réunit les messages de l'école et ceux du parent, et garde les justifications envoyées par la famille. Aucun envoi de l'un n'efface celui de l'autre.
 
 ## Tester dans Expo Go
 1. Installez **Node.js 20 ou plus récent**.
@@ -79,7 +92,7 @@ Les identifiants de l'application sont `com.doxha.lightacademy`, dans `app.json`
 ## Organisation du code
 - `src/app/` : les écrans (Expo Router).
   - `(staff)/` : l'équipe, avec ses onglets dans `(tabs)/` ;
-  - `(parent)/` : l'espace parent.
+  - `(parent)/` : l'espace parent ; ses onglets sont dans `(tabs)/`, avec en plus la conversation, le nouveau message, la feuille d'absence, le détail d'une matière et le compte.
 - `src/lib/school.ts` : les règles de gestion reprises du CRM web (soldes, statuts, reçus, moyennes, présences).
 - `src/lib/store.tsx` : lecture, cache hors ligne et file d'attente d'envoi pour l'équipe.
 - `src/lib/parent.tsx` : données de l'espace parent, via `parent_view()`.

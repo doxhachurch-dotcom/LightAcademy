@@ -287,3 +287,6 @@ const MO = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 
 export const fd = (s?: string) => { if (!s) return '—'; const d = pd(s); return `${d.getDate()} ${MO[d.getMonth()]} ${d.getFullYear()}`; };
 export const fdShort = (s?: string) => { if (!s) return '—'; const d = pd(s); return `${d.getDate()} ${MO[d.getMonth()]}`; };
 export const weekdayOf = (s: string) => pd(s).getDay();
+
+/** Heure d'un message : « 09:14 » aujourd'hui, sinon « 23 nov. » */
+export const when = (date: string) => { const [d, h] = String(date).split(' '); return d === today() ? h || '' : fdShort(d); };

@@ -1,10 +1,13 @@
-import { FileText } from 'lucide-react-native';
+import { router } from 'expo-router';
+import { FileText, Plus } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { ParentHead } from '../../../components/Kids';
-import { Button, Card, Empty, Loading, Muted, Pill, Row, Screen, Seg, T } from '../../../components/ui';
+import { Button, Card, Empty, Kpi, Loading, Muted, Pill, Row, Screen, Seg, T } from '../../../components/ui';
 import { bulletinHTML, sharePdf } from '../../../lib/docs';
-import { fa, fd, SLOTE, SLOTS, WD } from '../../../lib/school';
+import { fa, fdShort, SLOTE, SLOTS, ucf, WD, weekdayOf } from '../../../lib/school';
+
+const WD3 = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'];
 import { useParent } from '../../../lib/parent';
 import { font, useTheme } from '../../../lib/theme';
 
@@ -25,6 +28,7 @@ export default function Scolarite() {
   };
   const att = s.attOf(child.id);
   const lessons = s.lessons(child.level, day);
+  const toJustify = att.filter((a) => !a.justified).length;
 
   return (
     <Screen onRefresh={refresh} refreshing={false}>
@@ -35,7 +39,7 @@ export default function Scolarite() {
         <>
           <Card pad={0} style={{ paddingHorizontal: 14 }}>
             {s.subjOf(child.level).map((x) => (
-              <Row key={x.id} title={x.name} subtitle={[teachers[x.id], classAvg(x.id) != null ? `classe ${fa(classAvg(x.id))}` : ''].filter(Boolean).join(' · ')}
+              <Row key={x.id} onPress={() => router.push(`/matiere/${x.id}`)} title={x.name} subtitle={[teachers[x.id], classAvg(x.id) != null ? `classe ${fa(classAvg(x.id))}` : ''].filter(Boolean).join(' · ')}
                 right={<T style={{ fontFamily: font.semibold }}>{fa(s.subjAvg(child, x.id))}</T>} />
             ))}
             <Row last title="Moyenne générale" subtitle="Sur 20, coefficients du bulletin" right={<T style={{ fontFamily: font.bold, color: t.primary }}>{fa(s.genAvg(child))}</T>} />
@@ -47,12 +51,23 @@ export default function Scolarite() {
         </>
       )) : null}
       {tab === 'abs' ? (
-        <Card pad={0} style={{ paddingHorizontal: 14 }}>
-          {att.length ? att.map((a, i) => (
-            <Row key={a.id} last={i === att.length - 1} title={`${a.status === 'absent' ? 'Absence' : `Retard${a.minutes ? ` (${a.minutes} min)` : ''}`} · ${fd(a.date)}`} subtitle={a.motif || undefined}
-              right={<Pill small label={a.justified ? 'Justifiée' : 'Non justifiée'} tone={a.justified ? 'success' : 'warning'} />} />
-          )) : <Muted style={{ padding: 16 }}>Aucune absence ni retard. Bravo !</Muted>}
-        </Card>
+        <>
+          <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
+            <Kpi label="Absences" value={String(att.filter((a) => a.status === 'absent').length)} sub={toJustify ? `${toJustify} à justifier` : 'Toutes justifiées'} subTone={toJustify ? 'danger' : 'success'} />
+            <Kpi label="Retards" value={String(att.filter((a) => a.status === 'retard').length)} sub="Depuis la rentrée" />
+          </View>
+          <Card pad={0} style={{ paddingHorizontal: 14 }}>
+            {att.length ? att.map((a, i) => (
+              <Row key={a.id} last={i === att.length - 1}
+                title={`${a.status === 'absent' ? 'Absence' : `Retard${a.minutes ? ` (${a.minutes} min)` : ''}`} · ${ucf(WD3[weekdayOf(a.date)])} ${fdShort(a.date)}`}
+                subtitle={a.justified ? a.motif || 'Justifiée' : 'Non justifiée'}
+                right={a.justified ? <Pill small label={a.status === 'absent' ? 'Justifiée' : 'Justifié'} tone="success" />
+                  : <Button small label="Justifier" onPress={() => router.push({ pathname: '/absence', params: { mode: 'justify', att: a.id } })} />} />
+            )) : <Muted style={{ padding: 16 }}>Aucune absence ni retard. Bravo !</Muted>}
+          </Card>
+          <Button variant="ghost" label="Signaler une absence à venir" icon={Plus} style={{ marginTop: 14 }}
+            onPress={() => router.push({ pathname: '/absence', params: { mode: 'signal', student: child.id } })} />
+        </>
       ) : null}
       {tab === 'edt' ? (
         <>
