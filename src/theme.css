@@ -326,3 +326,5 @@ tfoot td{font-weight:600;background:#fafbfc}
 .slip-simple .slip-foot>div{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid #eef1f5;border-radius:8px;font-size:12.5px}
 .pay-simple .var-in{max-width:90px}
 @media print{.slip-simple .slip-who{background:none;border:1px solid #ddd}}
+.pp-box{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.nowrap{white-space:nowrap}
