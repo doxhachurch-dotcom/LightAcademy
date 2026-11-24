@@ -315,3 +315,16 @@ tfoot td{font-weight:600;background:#fafbfc}
 .lesson.edit{cursor:pointer}.lesson.edit:hover{filter:brightness(.97);box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent)}
 .cal-ev[onclick]{cursor:pointer}.cal-ev[onclick]:hover{filter:brightness(.95)}
 .slot-grid{display:grid;gap:8px}.slot-row{display:grid;grid-template-columns:90px 1fr 20px 1fr;align-items:center;gap:8px}
+/* bulletin simple */
+.slip-simple .doc-title{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.slip-simple .slip-who{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 16px;margin:18px 0 14px;background:#f8fafc;border-radius:8px}
+.slip-simple .slip-t{width:100%;border-collapse:collapse;font-size:13px}
+.slip-simple .slip-t td{padding:9px 16px;border-bottom:1px solid #eef1f5}
+.slip-simple .slip-t tr.tot td{font-weight:600;background:#f8fafc}
+.slip-simple .netbox{margin-top:14px}
+.slip-simple .slip-foot{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.slip-simple .slip-foot>div{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid #eef1f5;border-radius:8px;font-size:12.5px}
+.pay-simple .var-in{max-width:90px}
+@media print{.slip-simple .slip-who{background:none;border:1px solid #ddd}}
+.pp-box{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.nowrap{white-space:nowrap}
