@@ -173,3 +173,7 @@ function addPageButtons(){const a=document.querySelector('.content .page-head .a
  if(p==='paie'&&S.runs[ui.payMonth]&&S.runs[ui.payMonth].status==='draft'&&ui.role==='admin')h+=`<button class="btn" data-io onclick="openNewSlip()">${ic('plus',16)} Nouveau bulletin</button>`;
  if(!NO_EXPORT.includes(p)&&pageTables().length)h+=`<button class="btn" data-io onclick="openTableExport()">${ic('upload',16)} Exporter</button>`;
  if(h)a.insertAdjacentHTML('afterbegin',h)}
+
+/* Aucun fournisseur : on propose d'en créer un avant la dépense */
+const _openPurFormBase=openPurForm;
+openPurForm=function(id){if(!id&&!S.suppliers.length){modal('Nouvelle dépense',`<p>Ajoutez d’abord le fournisseur (ou la personne payée), puis la dépense.</p>`,`<button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="closeModal();openSupForm()">Ajouter un fournisseur</button>`);return}return _openPurFormBase(id)};
